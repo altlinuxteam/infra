@@ -1,0 +1,56 @@
+---
+voip:
+  path: "/var/lib/tftp/voip"
+  bind: "10.64.159.10"
+  only_from: "10.64.159.0/24"
+  commons:
+    t21:
+      model: "yealink_t21"
+      filename: "y000000000052.conf"
+      descr: "T21 common config"
+  devices:
+    sin:
+      model: "yealink_t21"
+      filename: "805ec003f557.cfg"
+      enabled: "1"
+      user_name: "531"
+      auth_name: "531"
+      password: !vault |
+        $ANSIBLE_VAULT;1.2;AES256;prod
+        36663334303865393665346163613963323264666566333830386164336338386462633664636531
+        6534383432303862383735316138626230336430646637330a633362316330396239353365656139
+        37303439393636633835333737653263383065623466363534316461303532653934666235323637
+        3133383861313539350a653639313739353539396634353132346637643936386637663633646336
+        6435
+      display_name: "531"
+      label: "altlinux"
+      sip_server: "93.191.18.91"
+      stun_server: "stun.sipnet.ru"
+      stun_port: 3478
+      outbound_host: "93.191.18.91"
+
+pxe:
+  path: "/var/lib/tftp/pxe"
+  bind: "10.64.128.10"
+  only_from: "10.64.128.0/24"
+  netinst:
+  - name: "srv"
+    descr: "ALT Server P8 (x86-64)"
+    proto: "http"
+    server: "10.64.128.6"
+    directory: "/iso/alt-8-server-x86_64"
+    ramdisk_size: 524288
+
+  - name: "ws"
+    descr: "ALT Workstation P8 (x86-64)"
+    proto: "http"
+    server: "10.64.128.6"
+    directory: "/iso/alt-workstation-8-x86_64"
+    ramdisk_size: 524288
+
+  - name: "kw"
+    descr: "ALT KWorkstation P8 (x86-64)"
+    proto: "http"
+    server: "10.64.128.6"
+    directory: "/iso/alt-kworkstation-8-install-x86_64"
+    ramdisk_size: 524288

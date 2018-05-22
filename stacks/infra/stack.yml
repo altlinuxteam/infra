@@ -1,0 +1,124 @@
+---
+name: infra
+domain: smb.basealt.ru
+nameservers:
+  - ns1.smb.basealt.ru
+  - ns2.smb.basealt.ru
+nodes:
+  a:
+    type: lxc
+    count: 1
+    cores: 2
+    mem: 512
+    template: "alt-sysV"
+    arch: "e2k"
+    net:
+      eth0:
+        bridge: "lxcbr0"
+        ipv4:
+        - "10.64.0.12/24"
+        default: "10.64.0.1"
+      eth1:
+        bridge: "lxcbr6"
+        ipv4:
+        - "10.64.6.12/24"
+  b:
+    type: pve
+    count: 1
+    cores: 2
+    mem: 2048
+    template: alt-server-82-x64
+    mounts:
+      - from: 10.64.0.6:/data/shared/iso
+        to: /mnt/iso
+        fstype: nfs
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 300
+        descr: mgmt
+        ipv4:
+        - "10.64.3.10/24"
+      eth1:
+        bridge: "vmbr1"
+        tag: 800
+        descr: ether
+        ipv4: [ "10.64.128.10/24" ]
+        #default: "10.64.128.1"
+      eth2:
+        bridge: "vmbr1"
+        tag: 801
+        descr: wifi
+        ipv4: [ "10.64.129.10/24" ]
+        #default: "10.64.129.1"
+      eth3:
+        bridge: "vmbr1"
+        tag: 802
+        descr: voip
+        ipv4: [ "10.64.159.10/24" ]
+        #default: "10.64.159.1"
+      eth4:
+        bridge: "vmbr1"
+        tag: 10
+        descr: priv
+        ipv4: [ "10.64.0.10/24" ]
+        default: "10.64.0.1"
+        nameservers:
+        - "10.64.0.1"
+        - "10.64.0.2"
+        search:
+        - "infra.smb.basealt.ru"
+        - "smb.basealt.ru"
+      eth5:
+        bridge: "vmbr1"
+        tag: 401
+        descr: wifi-guest
+        ipv4: [ "10.64.130.10/24" ]
+  c:
+    type: pve
+    count: 1
+    cores: 2
+    mem: 1024
+    template: alt-server-82-x64
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 300
+        descr: mgmt
+        ipv4:
+        - "10.64.3.11/24"
+      eth1:
+        bridge: "vmbr1"
+        tag: 800
+        descr: ether
+        ipv4: [ "10.64.128.11/24" ]
+        #default: "10.64.128.1"
+      eth2:
+        bridge: "vmbr1"
+        tag: 801
+        descr: wifi
+        ipv4: [ "10.64.129.11/24" ]
+        #default: "10.64.129.1"
+      eth3:
+        bridge: "vmbr1"
+        tag: 802
+        descr: voip
+        ipv4: [ "10.64.159.11/24" ]
+        #default: "10.64.159.1"
+      eth4:
+        bridge: "vmbr1"
+        tag: 10
+        descr: priv
+        ipv4: [ "10.64.0.11/24" ]
+        #default: "10.64.0.1"
+        nameservers:
+        - "10.64.0.10"
+        - "10.64.0.11"
+        search:
+        - "infra.smb.basealt.ru"
+        - "smb.basealt.ru"
+      eth5:
+        bridge: "vmbr1"
+        tag: 401
+        descr: wifi-guest
+        ipv4: [ "10.64.130.10/24" ]

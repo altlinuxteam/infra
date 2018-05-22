@@ -1,0 +1,52 @@
+---
+allow_query:
+  - any
+listen_ipv4:
+  - any
+listen_ipv6:
+  - any
+acls:
+  - name: acl1
+    match_list:
+      - 10.64.200.0/24
+forwarders:
+  - '8.8.8.8'
+  - '8.8.4.4'
+recursion: true
+check_hosts: 'master ignore'
+zone_networks:
+  - '10.64.200'
+  - '10.64.201'
+zone_ipv6_networks: [ ]
+#  - '2001:db8::/48'
+zone_name: 'smb.basealt.ru'
+zone_master_server_ip: 10.64.200.1
+zone_name_servers:
+  - ns1
+  - ns2
+zone_hosts:
+  - name: ns1
+    ip: 10.64.200.1
+  - name: ns2
+    ip: 10.64.200.2
+  - name: tftp
+    ip: 10.64.200.1
+#    aliases:
+#      - www
+zone_mail_servers: []
+#  - name: mail001
+#    preference: 10
+#  - name: mail002
+#    preference: 20
+zone_services:
+  - name: _ldap._tcp
+    weight: 100
+    port: 88
+    target: srv010
+zone_text:
+  - name: _kerberos
+    text: KERBEROS.ACME-INC.COM
+  - name: '@'
+    text:
+      - 'some text'
+      - 'more text'
