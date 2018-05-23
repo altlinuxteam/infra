@@ -16,6 +16,6 @@
 **** В общем случае (другая OS Linux)
 
 #+BEGIN_SRC bash
-    cat ./envs/prod.yml | yq -r '.users[]."pgp-key"' | gpg --import 
+    cat ./envs/prod.yml | yq -r '.users[]."pgp-key"' | gpg --import --allow-non-selfsigned-uid
 #+END_SRC
 
