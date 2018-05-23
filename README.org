@@ -1,0 +1,20 @@
+* Тестовое README
+
+** Импорт ключей GPG себе
+
+#+BEGIN_SRC bash
+    nix-env -i yq
+#+END_SRC
+
+Если у вас Alt Linux
+
+#+BEGIN_SRC bash
+    cat ./envs/prod.yml | yq -r '.users[]."pgp-key"' | gpg2 --import
+#+END_SRC
+
+В общем случае (другая OS Linux"
+
+#+BEGIN_SRC bash
+    cat ./envs/prod.yml | yq -r '.users[]."pgp-key"' | gpg2 --import
+#+END_SRC
+
