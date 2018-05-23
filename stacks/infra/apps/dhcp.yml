@@ -92,3 +92,10 @@ networks:
     bootp:
       filename: y000000000000.cfg
       tftp: "10.64.159.10"
+
+  "10.64.84.0/24":
+    range: "10.64.84.200 10.64.84.250"
+    vlan: 994
+    default: "10.64.84.1"
+    nameservers:
+    - "10.64.84.1"

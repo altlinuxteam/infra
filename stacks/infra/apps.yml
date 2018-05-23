@@ -1,22 +1,8 @@
 ---
 apps:
 - #step1:
-#  - name: "bind"
-#    binds: [ "b0" ]
-  - name: "sambaDC-master"
-    admin_pass: "ubex4vii1kie0aek4sieGhoh"
+  - name: "bind"
     binds: [ "b0" ]
-    dns_forwarders:
-    - "10.64.0.1"
-    - "8.8.8.8"
-    - "1.1.1.1"
-    shares:
-    - name: "iso"
-      path: "/mnt/iso"
-      browsable: "yes"
-      guest_ok: "yes"
-      writable: "no"
-      read_only: "yes"
 - #step2
 #  - name: "sambaDC-replica"
 #    admin_pass: "ubex4vii1kie0aek4sieGhoh"
