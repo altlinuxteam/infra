@@ -37,4 +37,4 @@ apps:
     vars:
       <<: *samba_params
       samba_flavor: client
-    binds: [ "cl0" ]
+    binds: [ "cl0" "cl1" ]

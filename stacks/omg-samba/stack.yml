@@ -33,7 +33,7 @@ nodes:
     type: pve
     arch: "x86_64"
     platform: "p8"
-    count: 1
+    count: 2
     cpus: 1
     cores: 2
     mem: 1024
