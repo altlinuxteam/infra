@@ -18,6 +18,7 @@ nodes:
         descr: pub
         ipv4:
         - "10.64.0.70/24"
+        default: "10.64.0.1"
         nameservers:
         - "8.8.8.8"
       eth1:
