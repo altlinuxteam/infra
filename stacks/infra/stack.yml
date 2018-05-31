@@ -65,6 +65,31 @@ nodes:
         search:
         - "infra.smb.basealt.ru"
         - "smb.basealt.ru"
+      eth7:
+        bridge: "vmbr1"
+        tag: 992
+        descr: sin-stands
+        ipv4: [ "10.64.82.251/24" ]
+      eth8:
+        bridge: "vmbr1"
+        tag: 993
+        descr: gkot-stands
+        ipv4: [ "10.64.83.251/24" ]
+      eth9:
+        bridge: "vmbr1"
+        tag: 995
+        descr: jqt4-stands
+        ipv4: [ "10.64.85.251/24" ]
+      eth10:
+        bridge: "vmbr1"
+        tag: 996
+        descr: asheplyakov-stands
+        ipv4: [ "10.64.86.251/24" ]
+      eth11:
+        bridge: "vmbr1"
+        tag: 997
+        descr: iv-stands
+        ipv4: [ "10.64.87.251/24" ]
   c:
     type: pve
     count: 1
@@ -121,3 +146,28 @@ nodes:
         tag: 994
         descr: omg-stands
         ipv4: [ "10.64.84.252/24" ]
+      eth7:
+        bridge: "vmbr1"
+        tag: 992
+        descr: sin-stands
+        ipv4: [ "10.64.82.252/24" ]
+      eth8:
+        bridge: "vmbr1"
+        tag: 993
+        descr: gkot-stands
+        ipv4: [ "10.64.83.252/24" ]
+      eth9:
+        bridge: "vmbr1"
+        tag: 995
+        descr: jqt4-stands
+        ipv4: [ "10.64.85.252/24" ]
+      eth10:
+        bridge: "vmbr1"
+        tag: 996
+        descr: asheplyakov-stands
+        ipv4: [ "10.64.86.252/24" ]
+      eth11:
+        bridge: "vmbr1"
+        tag: 997
+        descr: iv-stands
+        ipv4: [ "10.64.87.252/24" ]

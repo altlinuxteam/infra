@@ -1,5 +1,5 @@
 ---
-name: samba-template
+name: omg-samba
 domain: domain.alt
 nodes:
   dc:
@@ -14,11 +14,11 @@ nodes:
     net:
       eth0:
         bridge: "vmbr1"
-        tag: 10
+        tag: 997
         descr: pub
         ipv4:
-        - "10.64.0.70/24"
-        default: "10.64.0.1"
+        - "10.64.87.10/24"
+        default: "10.64.87.1"
         nameservers:
         - "8.8.8.8"
       eth1:
@@ -33,7 +33,7 @@ nodes:
     type: pve
     arch: "x86_64"
     platform: "p8"
-    count: 3
+    count: 2
     cpus: 1
     cores: 2
     mem: 1024
@@ -41,11 +41,11 @@ nodes:
     net:
       eth0:
         bridge: "vmbr1"
-        tag: 10
+        tag: 997
         descr: pub
         ipv4:
-        - "10.64.0.80/24"
-        default: "10.64.0.1"
+        - "10.64.87.100/24"
+        default: "10.64.87.1"
         nameservers:
         - "8.8.8.8"
       eth1:
