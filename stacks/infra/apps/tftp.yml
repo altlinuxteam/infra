@@ -27,7 +27,7 @@ voip:
       sip_server: "93.191.18.91"
       stun_server: "stun.sipnet.ru"
       stun_port: 3478
-      outbound_host: "93.191.18.91"
+      outbound_host: "Voip.basealt.space"
 
 pxe:
   path: "/var/lib/tftp/pxe"
