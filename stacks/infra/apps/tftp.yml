@@ -24,10 +24,10 @@ voip:
         6435
       display_name: "531"
       label: "altlinux"
-      sip_server: "93.191.18.91"
+      sip_server: "voip.basealt.space"
       stun_server: "stun.sipnet.ru"
       stun_port: 3478
-      outbound_host: "Voip.basealt.space"
+      outbound_host: "voip.basealt.space"
 
 pxe:
   path: "/var/lib/tftp/pxe"
