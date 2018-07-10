@@ -2,7 +2,7 @@
 networks:
   "10.64.6.0/24":
     range: "10.64.6.100 10.64.6.200"
-    vlan_range: 900-999
+    vlan_range: 900-989
     default: "10.64.6.1"
     nameservers:
     - "10.64.6.1"
@@ -49,24 +49,24 @@ networks:
       filename: "pxelinux.0"
       next-server: "10.64.128.10"
 
-  "10.64.129.0/24":
-    range: "10.64.129.100 10.64.129.200"
-    vlan: 801
-    default: "10.64.129.1"
-    nameservers:
-    - "10.64.129.1"
-    hosts:
-    - name: "xpi"
-      mac: "28:C6:3F:1A:92:B2"
-      ipv4: "10.64.129.20"
+#  "10.64.129.0/24":
+#    range: "10.64.129.100 10.64.129.200"
+#    vlan: 801
+#    default: "10.64.129.1"
+#    nameservers:
+#    - "10.64.129.1"
+#    hosts:
+#    - name: "xpi"
+#      mac: "28:C6:3F:1A:92:B2"
+#      ipv4: "10.64.129.20"
 
-    - name: "nbw-gkot"
-      mac: "9C:DA:3E:96:10:81"
-      ipv4: "10.64.129.30"
+#    - name: "nbw-gkot"
+#      mac: "9C:DA:3E:96:10:81"
+#      ipv4: "10.64.129.30"
 
-    - name: "snb"
-      mac: "9C:DA:3E:96:67:7F"
-      ipv4: "10.64.129.40"
+#    - name: "snb"
+#      mac: "9C:DA:3E:96:67:7F"
+#      ipv4: "10.64.129.40"
 
   "10.64.130.0/24":
     range: "10.64.130.100 10.64.130.200"
