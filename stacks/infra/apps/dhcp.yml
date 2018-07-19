@@ -33,6 +33,10 @@ networks:
     nameservers:
     - "10.64.128.1"
     hosts:
+    - name: "printer"
+      mac: "F4:30:B9:EE:30:E9"
+      ipv4: "10.64.128.250"
+
     - name: "xpi"
       mac: "A4:4C:C8:45:6A:2C"
       ipv4: "10.64.128.20"

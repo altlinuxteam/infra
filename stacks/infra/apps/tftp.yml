@@ -24,7 +24,7 @@ voip:
         6435
       display_name: "531"
       label: "altlinux"
-      sip_server: "voip.basealt.space"
+      sip_server: "93.191.18.91"
       stun_server: "stun.sipnet.ru"
       stun_port: 3478
       outbound_host: "voip.basealt.space"
