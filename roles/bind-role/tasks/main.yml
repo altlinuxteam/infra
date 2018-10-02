@@ -1,0 +1,71 @@
+# roles/bind/tasks/main.yml
+---
+# Initialise distribution-specific variables
+- name: Source specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution }}.yml"
+    - "{{ ansible_os_family }}.yml"
+
+- name: Check whether `bind_zone_master_server_ip` was set
+  assert:
+    that: bind_zone_master_server_ip is defined
+
+- name: Install BIND
+  apt_rpm:
+    pkg: "{{ item }}"
+    state: installed
+  with_items: "{{ bind_packages }}"
+  tags: bind
+
+- name: Ensure runtime directories referenced in config exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ bind_owner }}"
+    group: "{{ bind_group }}"
+    mode: 0770
+  with_items:
+    - "{{ bind_chroot }}/{{ bind_dir }}/dynamic"
+    - "{{ bind_chroot }}/{{ bind_dir }}/data"
+  tags: bind
+
+- name: Create serial, based on last two digits of year, month, day, and hour
+  command: date +%y%m%d%H
+  register: timestamp
+  changed_when: false
+  run_once: true
+  tags: bind
+
+- name: Read forward zone hashes
+  shell: 'grep "^; Hash:" {{ bind_zone_dir }}/{{ bind_zone_name }} || true'
+  changed_when: false
+  check_mode: false
+  register: forward_hashes
+
+- name: Read reverse ipv4 zone hashes
+  shell: "grep \"^; Hash:\" {{ bind_zone_dir }}/{{ ('.'.join(item.replace(item+'.','').split('.')[::-1])) }}.in-addr.arpa || true"
+  changed_when: false
+  check_mode: false
+  register: reverse_hashes
+  with_items: "{{ bind_zone_networks }}"
+
+- name: Read reverse ipv6 zone hashes
+  shell: "grep \"^; Hash:\" {{bind_zone_dir}}/{{ (item | ipaddr('revdns'))[-(9+(item|regex_replace('^.*/','')|int)//2):-1] }} || true"
+  changed_when: false
+  check_mode: false
+  register: reverse_hashes_ipv6
+  with_items: "{{ bind_zone_ipv6_networks }}"
+
+- include_tasks: master.yml
+  when: bind_zone_master_server_ip in ansible_all_ipv4_addresses
+
+- include_tasks: slave.yml
+  when: bind_zone_master_server_ip not in ansible_all_ipv4_addresses
+
+- name: Start BIND service
+  service:
+    name: "{{ bind_service }}"
+    state: started
+    enabled: yes
+  tags: bind

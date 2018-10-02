@@ -1,0 +1,139 @@
+---
+- set_fact: ansible_pkg_mgr=apt_rpm
+- set_fact: node="{{inventory_hostname_short}}"
+- set_fact: node="{{stack.nodes[inventory_hostname_short]}}"
+
+- name: wait nodes for connection
+  wait_for_connection:
+    delay: 3
+    timeout: 60
+
+- name: disable apt-cache in tmpfs
+  block:
+    - lineinfile:
+        path: /etc/rc.d/rc.local
+        regexp: '^/etc/rc\.d/scripts/apt-cache-on-tmp.*'
+        state: absent
+        backrefs: yes
+    - file:
+        path: /etc/apt/apt.conf.d/tmp.cache.conf
+        state: absent
+
+- name: purge apt.sources
+  shell: find /etc/apt/sources.list.d/ -name '*.list' -delete
+  changed_when: false
+
+- name: set apt sources
+  template:
+    src: "apt.list.j2"
+    dest: "/etc/apt/sources.list.d/{{item}}.list"
+  with_items: "{{env.apt.sources}}"
+
+- name: update packages list
+  shell: apt-get update
+
+- name: include additional apt repos from tasks
+  template:
+    src: "apt.list.tasks.j2"
+    dest: "/etc/apt/sources.list.d/tasks.list"
+  when: stack.apt_sources_from_tasks is defined
+
+- name: allow apt downgrade packages
+  template:
+    src: "downgrade.j2"
+    dest: "/etc/apt/preferences.d/downgrade"
+  when: node.arch == 'e2k'
+
+- name: install common packages
+  apt_rpm:
+    pkg: ntpdate,curl
+    state: installed
+    update_cache: yes
+
+- name: install Alterator`s modules
+  apt_rpm:
+      pkg: alterator,alterator-net-eth
+#      pkg: alterator,alterator-alternatives,alterator-audit,alterator-bind,alterator-datetime,alterator-dhcp,alterator-groups,alterator-mirror,alterator-mkimage,alterator-net-bond,alterator-net-bridge,alterator-net-domain,alterator-net-eth,alterator-net-functions,alterator-net-iptables,alterator-net-routing,alterator-net-vlan,alterator-packages,alterator-services,alterator-sshd,alterator-sysconfig,alterator-users,alterator-vsftpd,alterator-xinetd
+      state: installed
+
+# FIX: don't know how to switch from dhcp to static via alterator
+# just remove this line from options file for now
+- name: remove options for eth0
+  lineinfile:
+      dest: /etc/net/ifaces/eth0/options
+      regexp: '^BOOTPROTO=dhcp.*'
+      backrefs: yes
+      state: absent
+
+- name: disable IPv6
+  sysctl: name={{ item }} value=1 state=present
+  with_items:
+    - net.ipv6.conf.all.disable_ipv6
+    - net.ipv6.conf.default.disable_ipv6
+    - net.ipv6.conf.lo.disable_ipv6
+
+- name: blacklisting IPv6 module
+  template:
+    src: ipv6-disable.conf.j2
+    dest: /etc/modprobe.d/options-local.conf
+
+- name: configure NICs
+  include_tasks: configure_nics.yml
+  with_dict: "{{node.net}}"
+  loop_control:
+      loop_var: nic
+      #  when: node.net is defined
+
+- name: apply NICs config
+  command: alterator-cmdline /net-eth action write commit "#t"
+  changed_when: false
+  async: 100
+  poll: 0
+
+- name: update .tmp/ssh_config after NICs reconfiguration
+  include_role: name="inventory"
+
+- name: wait for the host`s NIC to come back
+  wait_for_connection:
+    delay: 2
+    timeout: 300
+
+# TODO: need to make it idempotent!
+- name: set hostname
+  shell: '[[ $(hostname -s) == "{{inventory_hostname_short}}" ]] || { alterator-cmdline -d /net-eth action write computer_name "{{inventory_hostname_short}}" commit "#t"; echo changed; }'
+  register: result
+  notify: restart network
+  changed_when: '"changed" in result.stdout'
+
+- name: set domainname
+  #  shell: '[[ $(domainname) == "{{stack.domain}}" ]] || { alterator-cmdline -d /net-domain action write domain "{{stack.domain}}" domain_type "dns" commit "#t"; echo changed; }'
+  shell: '[[ $(domainname) == "{{stack.domain}}" ]] || { domainname "{{stack.domain}}"; echo changed; }'
+  register: result
+  notify: restart network
+  changed_when: '"changed" in result.stdout'
+
+- name: delete .bash_logout
+  file:
+    path: /root/.bash_logout
+    state: absent
+
+- meta: flush_handlers
+
+- setup:
+
+- name: register users keys
+  template:
+    dest: /etc/openssh/authorized_keys/root
+    src: authorized_keys
+    owner: root
+    group: root
+    mode: 0644
+
+- name: mount nfs shares
+  mount:
+    src: "{{item.from}}"
+    path: "{{item.to}}"
+    fstype: "{{item.fstype}}"
+    state: mounted
+  with_items: "{{node.mounts}}"
+  when: node.mounts is defined

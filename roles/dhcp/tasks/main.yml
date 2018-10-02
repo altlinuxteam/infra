@@ -1,0 +1,25 @@
+---
+- name: include dhcp variables
+  include_vars:
+    file: "conf/stacks/{{stack.name}}/apps/dhcp.yml"
+    name: dhcp
+
+- name: install service package
+  apt_rpm:
+      pkg: dhcp-server
+      state: installed
+  tags: dhcp
+
+- name: generate service config
+  template:
+      src=dhcpd.conf
+      dest=/etc/dhcp/dhcpd.conf
+  tags: dhcp
+  notify: restart dhcpd
+
+- name: enable service
+  service:
+      name: dhcpd
+      enabled: yes
+      state: started
+  tags: dhcp

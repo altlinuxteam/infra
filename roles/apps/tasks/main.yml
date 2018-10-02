@@ -1,0 +1,7 @@
+---
+- debug: msg="{{stack}}"
+- name: "install apps"
+  include_tasks: prepare.yml
+  with_items: "{{stack.apps[step]}}"
+  loop_control:
+      loop_var: app

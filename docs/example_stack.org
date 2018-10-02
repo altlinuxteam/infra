@@ -1,0 +1,23 @@
+* Generate example environment and stack
+  #+BEGIN_SRC sh
+    ansible-playbook make-example-stack.yml \
+		     -e pve_address=10.64.0.6 \
+		     -e pve_login="example@pve" \
+		     -e pve_password='examplePass123$'\
+		     `# parameters listed below are optional` \
+		     `# default values will be used if ommited` \
+		     -e stack_name="example-samba" \
+		     -e domain_name="domain.alt" \
+		     -e public_bridge="vmbr1" \
+		     -e public_vlan="994" \
+		     -e public_gw="10.64.84.1" \
+		     -e public_dns="8.8.8.8" \
+		     -e private_bridge="vmbr1" \
+		     -e private_vlan="940" \
+		     -e server_template="alt-srv-82-x64-latest" \
+		     -e servers_public_ips="10.64.84.20/24" \
+		     -e servers_private_ips="10.64.6.1/24" \
+		     -e desktop_template="alt-workstation-82-x64-latest" \
+		     -e desktops_public_ips="10.64.84.200/24" \
+		     -e desktops_private_ips="10.64.6.100/24"
+  #+END_SRC

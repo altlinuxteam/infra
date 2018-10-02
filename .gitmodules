@@ -1,0 +1,10 @@
+[submodule "role-samba"]
+	path = roles/samba
+	url = https://github.com/altlinuxteam/ansible-samba.git
+	branch = master
+[submodule "roles/remote-desktop"]
+	path = roles/remote-desktop
+	url = https://github.com/altlinuxteam/remote-desktop.git
+[submodule "roles/tftp"]
+	path = roles/tftp
+	url = https://github.com/altlinuxteam/ansible-tftp.git

@@ -1,0 +1,30 @@
+---
+- name: "{{nic.key}} | set default route"
+  shell: egrep -q "^default via {{item|ipaddr('address')}}$" /etc/net/ifaces/"{{nic.key}}"/ipv4route || { alterator-cmdline -d /net-eth action write name "{{nic.key}}" ipv 4 configuration "static" default "{{item|ipaddr('address')}}" ipv_enabled "#t"; echo default_changed; }
+  register: result
+  changed_when: '"default_changed" in result.stdout'
+  notify: restart network
+  with_items: "{{nic.value.default}}"
+  when: nic.value.default is defined
+
+- name: "{{nic.key}} | set nameservers"
+  shell: awk '($1 ~ /nameserver/){ list=list" "$2; }END{print list;}' /etc/net/ifaces/"{{nic.key}}"/resolv.conf | egrep -q "^{{nic.value.nameservers|join(' ')}}$" || { alterator-cmdline -d /net-eth action write name "{{nic.key}}" ipv 4 configuration "static" dns "{{nic.value.nameservers|join(' ')}}" ipv_enabled "#t"; echo dns_changed; }
+  register: result
+  changed_when: '"dns_changed" in result.stdout'
+  notify: restart network
+  when: nic.value.nameservers is defined
+
+- name: "{{nic.key}} | set search domains"
+  shell: egrep -q "^search {{nic.value.search|join(' ')}}$" /etc/net/ifaces/"{{nic.key}}"/resolv.conf || { alterator-cmdline -d /net-eth action write name "{{nic.key}}" ipv 4 configuration "static" search "{{nic.value.search|join(' ')}}" ipv_enabled "#t"; echo search_changed; }
+  register: result
+  changed_when: '"search_changed" in result.stdout'
+  notify: restart network
+  when: nic.value.search is defined
+
+- name: "{{nic.key}} | set IP addresses (async)"
+  shell: egrep -q "^{{item|ipaddr('address')}}/{{item|ipaddr('prefix')}}$" /etc/net/ifaces/"{{nic.key}}"/ipv4address || { alterator-cmdline -d /net-eth action add_iface_address name "{{nic.key}}" addip "{{item|ipaddr('address')}}" addmask "{{item|ipaddr('prefix')}}" ipv 4 configuration "static" ipv_enabled "#t"; echo addr_changed; }
+  register: result
+  changed_when: result.stdout is defined and '"addr_changed" in result.stdout'
+  notify: restart network
+  with_items: "{{nic.value.ipv4}}"
+  when: nic.value.ipv4 is defined

@@ -1,0 +1,40 @@
+---
+samba_parameters: &samba_params
+  samba_realm: "domain.alt"
+  samba_domain: "domain"
+  samba_admin_pass: "myPass123$"
+  samba_dns_forward: 8.8.8.8
+  samba_dns_backend: SAMBA_INTERNAL
+  samba_master_hostname: dc0
+  samba_master_address: 10.64.6.1
+  samba_network: 10.64.6.0/24
+
+apps:
+- # step1
+  - name: samba
+    vars:
+      <<: *samba_params
+      samba_flavor: master
+    binds: [ "dc0" ]
+
+- #step2
+  - name: samba
+    vars:
+      <<: *samba_params
+      samba_flavor: replica
+    binds: [ "dc1", "dc2" ]
+
+  - name: samba
+    vars:
+      <<: *samba_params
+      samba_flavor: client
+    binds: [ "cl0", "cl1" ]
+
+- #step3
+  - name: samba
+    vars:
+      <<: *samba_params
+      samba_flavor: gen_test_env
+      samba_generate_domain_config: true
+      samba_domain_config_output: ".tmp/domain_config"
+    binds: [ "dc0" ]

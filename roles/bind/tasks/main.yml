@@ -1,0 +1,15 @@
+---
+- name: prepare config for role
+  block:
+  - include_vars:
+      file: "conf/stacks/{{stack_name}}/apps/bind.yml"
+      name: bind
+  - set_fact: {'bind_{{item.key}}': '{{item.value}}'}
+    with_dict: "{{bind}}"
+
+- set_fact:
+    ansible_distribution: "ALT"
+    ansible_os_family: "ALT"
+
+- name: execute actual role
+  import_role: name=bind-role

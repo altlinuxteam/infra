@@ -1,0 +1,14 @@
+---
+{% for s in stack.apps %}
+- name: executing step{{loop.index-1}}
+  hosts: step{{loop.index-1}}
+  strategy: free
+  gather_facts: True
+  roles:
+  - {role: prepare-config}
+  - {role: apps}
+  vars:
+  - step: {{loop.index-1}}
+  tags: [ "apps" ]
+
+{% endfor %}

@@ -1,0 +1,14 @@
+.venv/
+.tmp/
+*.retry
+*.log
+*.pyc
+.pass-*
+vars/envs
+vars/stacks
+*~
+*#
+*.swp
+*-apps.yml
+.pytest_cache/
+vars/conf/

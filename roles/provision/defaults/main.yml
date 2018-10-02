@@ -1,0 +1,7 @@
+---
+provision_supported_providers:
+- bare
+- pve
+- lxc
+
+provision_nodes: []

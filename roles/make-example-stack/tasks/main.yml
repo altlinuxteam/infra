@@ -1,0 +1,35 @@
+---
+- name: generate ansible vault password
+  set_fact:
+    vault_pass: "{{ lookup('password', '.tmp/example-env-pass length=6 chars=ascii_letters') }}"
+
+- name: encrypt PVE password with Ansible Vault
+  command: ansible-vault encrypt_string --vault-id .tmp/example-env-pass '{{ pve_password }}' --name 'password'
+  register: res
+
+- name: register encrypted password
+  set_fact:
+    pve_pass_encrypted: "{{ res.stdout }}"
+
+- name: make directories
+  file:
+    path: "vars/conf/{{ item }}"
+    state: directory
+  with_items:
+    - envs
+    - stacks/example
+
+- name: generate example environment
+  template:
+    src: env.yml
+    dest: vars/conf/envs/example.yml
+
+- name: generate example stack
+  template:
+    src: stack.yml
+    dest: vars/conf/stacks/example/stack.yml
+
+- name: generate example apps
+  template:
+    src: apps.yml
+    dest: vars/conf/stacks/example/apps.yml

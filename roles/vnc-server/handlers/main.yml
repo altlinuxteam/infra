@@ -1,0 +1,5 @@
+---
+- name: restart dm
+  service:
+    name: lightdm
+    state: restarted

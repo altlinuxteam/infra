@@ -1,0 +1,34 @@
+---
+- name: check input parameters
+  hosts: localhost
+  gather_facts: false
+  tags: always
+  tasks:
+  - fail: msg="env_name should be set"
+    when: env_name is not defined
+  - fail: msg="stack_name should be set"
+    when: stack_name is not defined
+
+- name: provisioning PVE nodes
+  hosts: localhost
+  gather_facts: false
+  roles:
+  - {role: prepare-config, tags: [ ]}
+  - {role: pve, tags: [ ]}
+  - {role: lxc, tags: [ ]}
+  - {role: inventory, bootstrap: yes, tags: [ ]}
+  tags: [ provision ]
+
+- name: prepare nodes
+  hosts: stack
+  gather_facts: false
+  pre_tasks:
+    - meta: end_play
+      when: destroy_all is defined and destroy_all
+    - name: gather facts
+      setup:
+      when: destroy_all is not defined or not destroy_all
+  roles:
+  - {role: prepare-config, tags: [ ]}
+  - {role: common, tags: [ ]}
+  tags: [ prepare ]

@@ -1,0 +1,50 @@
+---
+name: {{ stack_name | default('example-samba') }}
+domain: {{ domain_name | default('domain.alt') }}
+
+x86_node: &x86_node
+  type: pve
+  arch: "x86_64"
+  platform: p8
+  cpus: 1
+  cores: 2
+  mem: 1024
+  net: &net
+    eth0: &eth0
+      bridge: {{ public_bridge | default('vmbr1') }}
+      tag: {{ public_vlan | default('994') }}
+      descr: "pub"
+      default: {{ public_gw | default('10.64.84.1') }}
+      nameservers: [ {{ public_dns | default('8.8.8.8') }} ]
+    eth1: &eth1
+      bridge: {{ private_bridge | default('vmbr1') }}
+      tag: {{ private_vlan | default('940') }}
+      descr: priv
+      search: [ {{ domain_name | default('domain.alt') }} ]
+
+nodes:
+  dc:
+    <<: *x86_node
+    template: {{ server_template | default('alt-srv-82-x64') }}
+    count: 3
+    net:
+      <<: *net
+      eth0:
+        <<: *eth0
+        ipv4: [ {{ servers_public_ips | default('10.64.84.10/24') }} ]
+      eth1:
+        <<: *eth1
+        ipv4: [ {{ servers_private_ips | default('10.64.6.1/24') }} ]
+
+  cl:
+    <<: *x86_node
+    template: {{ desktop_template | default ('alt-workstation-82-x64') }}
+    count: 2
+    net:
+      <<: *net
+      eth0:
+        <<: *eth0
+        ipv4: [ {{ desktops_public_ips | default('10.64.84.100/24') }} ]
+      eth1:
+        <<: *eth1
+        ipv4: [ {{ desktops_private_ips | default('10.64.6.100/24') }} ]

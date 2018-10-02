@@ -1,0 +1,9 @@
+---
+- name: "prepare {{ app.name }} environment on {{ inventory_hostname_short }}"
+  set_fact: {"{{ item.key }}":"{{ item.value }}"}
+  with_dict: "{{ app.vars }}"
+  when: app.vars is defined
+
+- name: "apply {{ app.name }} role on {{ inventory_hostname_short }}"
+  include_role: name="{{app.name}}"
+  when: inventory_hostname_short in app.binds

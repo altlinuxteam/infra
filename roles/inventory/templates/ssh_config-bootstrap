@@ -1,0 +1,15 @@
+{% for node_name, node in stack.nodes.iteritems() %}
+Host {{node_name}}.{{stack.domain}} {{node_name}}
+{% if node.nics is defined %}
+  HostName {{node.nics.eth0.addrs[0]|ipaddr('address')}}
+{% else %}
+  HostName {{node.net.eth0.ipv4[0]|ipaddr('address')}}
+{% endif %}
+  User root
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+{% if node.net.eth0.ssh_proxy is defined %}
+  ProxyJump {{node.net.eth0.ssh_proxy}}
+{% endif %}
+
+{% endfor %}

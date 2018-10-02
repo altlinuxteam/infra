@@ -1,0 +1,25 @@
+---
+ansible_pkg_mgr: apt_rpm
+
+bind_packages:
+  - python-module-netaddr
+  - bind
+  - bind-utils
+
+bind_service: bind
+
+# Main config file
+bind_config: /etc/bind/named.conf
+
+# Localhost zone
+bind_default_zone_files:
+  - /etc/bind/rndc.conf
+#  - /etc/bind/local.conf
+
+# Directory with run-time stuff
+bind_chroot: /var/lib/bind
+bind_zone_dir: /etc/bind/zone
+bind_dir: /var/run
+
+bind_owner: named
+bind_group: named

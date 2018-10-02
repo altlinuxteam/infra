@@ -1,0 +1,10 @@
+# {{ansible_managed}}
+{% for t in stack.apt_sources_from_tasks %}
+{% if t is mapping %}
+{% if inventory_hostname_short in t.binds %}
+rpm http://git.altlinux.org repo/{{t.id}}/{{node.arch}} task
+{% endif %}
+{% else %}
+rpm http://git.altlinux.org repo/{{t}}/{{node.arch}} task
+{% endif %}
+{% endfor %}

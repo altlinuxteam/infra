@@ -1,0 +1,11 @@
+---
+- name: install xinetd package
+  apt_rpm:
+    pkg: xinetd
+    state: installed
+
+- name: enable xinetd service
+  service:
+    name: xinetd
+    enabled: yes
+    state: started

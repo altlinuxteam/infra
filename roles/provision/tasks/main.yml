@@ -1,0 +1,11 @@
+---
+- name: validate nodes providers
+  fail: msg="provider '{{item.provider}}' is not supported"
+  when: item.provider not in provision_supported_providers
+  with_items: "{{provision_nodes}}"
+
+- name: provision nodes
+  include_tasks: "{{item.provider}}.yml"
+  vars:
+    node: "{{item}}"
+  with_items: "{{provision_nodes}}"

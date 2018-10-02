@@ -1,0 +1,29 @@
+---
+- name: include environment definition
+  include_vars:
+    file: "conf/envs/{{env_name}}.yml"
+    name: env
+
+- set_fact:
+    env: "{{env}}"
+
+- name: import config for stack
+  block:
+  - include_vars:
+      file: "conf/stacks/{{stack_name}}/apps.yml"
+      name: as
+  - include_vars:
+      file: "conf/stacks/{{stack_name}}/stack.yml"
+      name: st
+
+- set_fact:
+    gen_nodes: []
+
+- name: genrate nodes list
+  include_tasks: generate_nodes.yml
+  with_items: "{{st.nodes}}"
+
+- set_fact:
+    stack: "{{ {}|combine( st | combine({'nodes': gen_nodes|list_to_dict}) )|combine(as) }}"
+#    stack: "{{ {}|combine( st )|combine({'apps': as}) }}"
+#- debug: msg="{{stack}}"

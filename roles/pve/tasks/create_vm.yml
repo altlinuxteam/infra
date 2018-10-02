@@ -1,0 +1,90 @@
+---
+- set_fact: node_name="{{tmp_node}}"
+- set_fact: vm_name="{{node_name}}.{{stack.name}}"
+
+- name: "[{{vm_name}}] clone VM"
+  proxmox_kvm:
+    node: srv
+    api_user: "{{env.pve.username}}"
+    api_password: "{{env.pve.password}}"
+    api_host: "{{env.pve.api_url}}"
+    name: "{{vm_name}}"
+    pool: "{{env_name}}"
+    clone: "{{stack.nodes[node_name].template}}"
+    full: no
+#    storage: "{{env.pve.storage}}"
+    timeout: 90
+#    state: present
+
+- name: "[{{vm_name}}] get VM state"
+  proxmox_kvm:
+    node: srv
+    api_user: "{{env.pve.username}}"
+    api_password: "{{env.pve.password}}"
+    api_host: "{{env.pve.api_url}}"
+    name: "{{vm_name}}"
+    agent: yes
+    state: current
+  register: vm_status
+  until: vm_status is succeeded
+  retries: 30
+  delay: 1
+  ignore_errors: yes
+
+- name: "[{{vm_name}}] configure VM"
+  proxmox_kvm:
+    node: srv
+    api_user: "{{env.pve.username}}"
+    api_password: "{{env.pve.password}}"
+    api_host: "{{env.pve.api_url}}"
+    name: "{{vm_name}}"
+    agent: yes
+    cpu: host
+    kvm: yes
+    cores: "{{stack.nodes[node_name].cores}}"
+    memory: "{{stack.nodes[node_name].mem}}"
+#    storage: "{{env.pve.storage}}"
+    net: "{{stack.nodes[node_name].net | to_proxmox_net}}"
+    update: yes
+    state: present
+  register: vm_status
+  until: vm_status is succeeded
+  retries: 30
+  delay: 1
+  ignore_errors: yes
+
+- name: "[{{vm_name}}] start VM"
+  proxmox_kvm:
+    node: srv
+    api_user: "{{env.pve.username}}"
+    api_password: "{{env.pve.password}}"
+    api_host: "{{env.pve.api_url}}"
+    name: "{{vm_name}}"
+    state: started
+
+- name: "[{{vm_name}}] wait for qemu-agent return addresses list"
+  proxmox_qemu_agent:
+    api_user: "{{env.pve.username}}"
+    api_password: "{{env.pve.password}}"
+    api_host: "{{env.pve.api_url}}"
+    name: "{{vm_name}}"
+    command: "network-get-interfaces"
+  register: res
+  until: res.results | json_query('[] | [?name!=`lo`]."ip-addresses" | [] | [?"ip-address-type"==`ipv4`] | []."ip-address"') != None
+  retries: 30
+  delay: 1
+
+- name: "[{{vm_name}}] wait for any IP on any VM's interface"
+  proxmox_qemu_agent:
+    api_user: "{{env.pve.username}}"
+    api_password: "{{env.pve.password}}"
+    api_host: "{{env.pve.api_url}}"
+    name: "{{vm_name}}"
+    command: "network-get-interfaces"
+  register: res
+  until: res.results | json_query('[] | [?name!=`lo`]."ip-addresses" | [] | [?"ip-address-type"==`ipv4`] | []."ip-address"') | length > 0
+  retries: 30
+  delay: 1
+
+- name: "[{{vm_name}}] register VM's interfaces info"
+  set_fact: stack="{{stack|dict_inject("/nodes/"+node_name+"/nics", res.results|to_nics_dict)}}"

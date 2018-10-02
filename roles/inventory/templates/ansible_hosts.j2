@@ -1,0 +1,6 @@
+{% for g in groups %}
+[{{g}}]
+{% for h in groups[g] %}
+{{h}}
+{% endfor %}
+{% endfor %}

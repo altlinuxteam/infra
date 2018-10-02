@@ -1,0 +1,21 @@
+---
+- name: register PVE nodes
+  set_fact:
+    pve_nodes: "{{stack.nodes | filter_dict(\"lambda x: x['type']=='pve'\")}}"
+
+- name: destroy VMs
+  include_tasks: destroy_vm.yml
+  with_items: "{{pve_nodes}}"
+  loop_control:
+      loop_var: tmp_node
+  when: redeploy_all is defined and redeploy_all|bool == true
+        or destroy_all is defined and destroy_all|bool == true
+
+#- meta: end_play
+
+- name: create VMs
+  include_tasks: create_vm.yml
+  with_items: "{{pve_nodes}}"
+  loop_control:
+      loop_var: tmp_node
+  when: destroy_all is not defined or destroy_all|bool == false

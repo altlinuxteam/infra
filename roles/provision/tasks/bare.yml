@@ -1,0 +1,3 @@
+---
+- name: "provision bare node"
+  debug: msg="[dummy] {{ node.provider }} node {{ node.name }}"

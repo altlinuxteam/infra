@@ -1,0 +1,20 @@
+---
+- name: install packages
+  apt_rpm:
+    pkg: xorg-extension-vnc
+    state: installed
+
+- name: enable vnc service
+  replace:
+    path: /etc/X11/xorg.conf.d/vnc.conf
+    regexp: '#(.*)'
+    replace: '\1'
+  notify: restart dm
+
+- name: create directory
+  file:
+    path: /root/.vnc
+    state: directory
+
+- name: set vnc password
+  shell: "vncpasswd -f <<< {{vnc_password}} > /root/.vnc/passwd"

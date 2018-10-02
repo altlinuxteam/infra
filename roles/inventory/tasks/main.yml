@@ -1,0 +1,43 @@
+---
+- name: generate ssh_config for bootstrap
+  template: src=ssh_config-bootstrap dest=.tmp/ssh_config
+  delegate_to: localhost
+  when: bootstrap is defined
+
+- name: generate ssh_config for bootstrap
+  template: src=ssh_config-bootstrap dest=".tmp/ssh_config-{{stack.name}}"
+  delegate_to: localhost
+  when: bootstrap is defined
+
+- name: generate ssh_config
+  template: src=ssh_config dest=.tmp/ssh_config
+  delegate_to: localhost
+  when: bootstrap is not defined
+
+- name: generate ssh_config
+  template: src=ssh_config dest=".tmp/ssh_config-{{stack.name}}"
+  delegate_to: localhost
+  when: bootstrap is not defined
+
+- name: populate dynamic inventiry
+  add_host:
+      name: "{{tmp_node}}"
+      groups: "{{['stack'] + tmp_node|get_steps(stack.apps)}}"
+      ansible_ssh_host: "{{tmp_node}}.{{stack.domain}}"
+      ansible_ssh_port: 22
+  with_items: "{{stack.nodes}}"
+  loop_control:
+      loop_var: tmp_node
+  changed_when: false
+
+- name: save invetory to file
+  template:
+    src: ansible_hosts.j2
+    dest: ".tmp/ansible_hosts"
+  delegate_to: localhost
+
+- name: generate apps playbook
+  template:
+    src: apps.yml.j2
+    dest: "./{{env_name}}-{{stack_name}}-apps.yml"
+  delegate_to: localhost

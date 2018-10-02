@@ -1,0 +1,32 @@
+- set_fact: node_name="{{tmp_node}}"
+- set_fact: vm_name="{{node_name}}.{{stack.name}}"
+
+- name: checking that vm exists
+  proxmox_kvm:
+    node: srv
+    api_user: "{{env.pve.username}}"
+    api_password: "{{env.pve.password}}"
+    api_host: "{{env.pve.api_url}}"
+    name: "{{vm_name}}"
+    state: current
+  ignore_errors: true
+  register: vm_exists
+
+- block:
+  - name: stopping vm
+    proxmox_kvm:
+      node: srv
+      api_user: "{{env.pve.username}}"
+      api_password: "{{env.pve.password}}"
+      api_host: "{{env.pve.api_url}}"
+      name: "{{vm_name}}"
+      state: stopped
+  - name: destroying vm
+    proxmox_kvm:
+      node: srv
+      api_user: "{{env.pve.username}}"
+      api_password: "{{env.pve.password}}"
+      api_host: "{{env.pve.api_url}}"
+      name: "{{vm_name}}"
+      state: absent
+  when: vm_exists is succeeded

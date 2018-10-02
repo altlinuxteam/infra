@@ -1,0 +1,23 @@
+
+- set_fact:
+    required_packages:
+    - python-module-jmespath
+    - python-module-netaddr
+  when: ansible_os_family == 'ALT'
+
+# XXX: apt_rpm requires root privileges even if the packages are already installed
+- name: check if required packages are installed
+  command: >
+    rpm -q {{ required_packages|join(" ") }}
+  register: required_packages_installed
+  failed_when: false
+  when: ansible_os_family == 'ALT'
+
+- name: install required packages on ALT Linux
+  apt_rpm: pkg={{ item }} state=present
+  with_items: "{{ required_packages }}"
+  when: ansible_os_family == 'ALT' and required_packages_installed.rc != 0
+  become: true
+
+- include: ./extract_secret.yml
+  with_items: "{{ pass_secrets }}"

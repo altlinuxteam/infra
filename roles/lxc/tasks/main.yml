@@ -1,0 +1,86 @@
+---
+- name: register LXC nodes
+  set_fact:
+    lxc_nodes: "{{stack.nodes | filter_dict(\"lambda x: x['type']=='lxc'\")}}"
+
+- name: destroy containers
+  block:
+  - shell: if lxc-info -n "{{cont_name}}" | grep -q RUNNING ; then lxc-stop -t2 -n "{{cont_name}}"; else true; fi
+    delegate_to: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['hostname']}}"
+    remote_user: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['username']}}"
+    with_items: "{{lxc_nodes}}"
+    vars:
+      cont_name: "{{env_name}}-{{stack_name}}-{{tmp_node}}"
+    loop_control:
+      loop_var: tmp_node
+  - shell: rm -rf /mnt/osl/var/lib/lxc/{{cont_name}}
+    delegate_to: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['hostname']}}"
+    remote_user: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['username']}}"
+    with_items: "{{lxc_nodes}}"
+    vars:
+      cont_name: "{{env_name}}-{{stack_name}}-{{tmp_node}}"
+    loop_control:
+      loop_var: tmp_node
+  - shell: rm -rf "/var/lib/lxc/{{cont_name}}"
+    delegate_to: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['hostname']}}"
+    remote_user: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['username']}}"
+    with_items: "{{lxc_nodes}}"
+    vars:
+      cont_name: "{{env_name}}-{{stack_name}}-{{tmp_node}}"
+    loop_control:
+      loop_var: tmp_node
+  when: redeploy_all is defined and redeploy_all|bool == true
+        or destroy_all is defined and destroy_all|bool == true
+
+#- meta: end_play
+#  when: destroy_all is defined and destroy_all|bool == true
+
+- name: "create container config"
+  block:
+  - file:
+      path: "/var/lib/lxc/{{cont_name}}/"
+      state: directory
+    delegate_to: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['hostname']}}"
+    remote_user: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['username']}}"
+    with_items: "{{lxc_nodes}}"
+    vars:
+      cont_name: "{{env_name}}-{{stack_name}}-{{tmp_node}}"
+    loop_control:
+      loop_var: tmp_node
+
+  - template:
+      src: config.j2
+      dest: "/var/lib/lxc/{{cont_name}}/config"
+    delegate_to: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['hostname']}}"
+    remote_user: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['username']}}"
+    with_items: "{{lxc_nodes}}"
+    vars:
+      cont_name: "{{env_name}}-{{stack_name}}-{{tmp_node}}"
+    loop_control:
+      loop_var: tmp_node
+
+  - shell: mkdir -p /mnt/osl/var/lib/lxc/{{cont_name}}; [[ ! -d /mnt/osl/var/lib/lxc/{{cont_name}}/rootfs ]] && rsync -a /mnt/osl/var/lib/lxc/{{stack['nodes'][tmp_node]['template']}}/rootfs /mnt/osl/var/lib/lxc/{{cont_name}}/ || true
+    delegate_to: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['hostname']}}"
+    remote_user: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['username']}}"
+    with_items: "{{lxc_nodes}}"
+    vars:
+      cont_name: "{{env_name}}-{{stack_name}}-{{tmp_node}}"
+    loop_control:
+      loop_var: tmp_node
+
+  - lxc_container:
+      name: "{{cont_name}}"
+      state: started
+      container_command: |
+        apt-get update
+        apt-get install -y openssh-server python-modules python-modules-json python-module-distutils-extra python-module-setuptools
+        chkconfig sshd on
+        service sshd start
+    delegate_to: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['hostname']}}"
+    remote_user: "{{env['lxc'][stack['nodes'][tmp_node]['arch']]['username']}}"
+    with_items: "{{lxc_nodes}}"
+    vars:
+      cont_name: "{{env_name}}-{{stack_name}}-{{tmp_node}}"
+    loop_control:
+      loop_var: tmp_node
+  when: destroy_all is not defined or destroy_all|bool == false

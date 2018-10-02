@@ -1,0 +1,14 @@
+---
+- name: make example stack
+  hosts: localhost
+  gather_facts: false
+  become: false
+  pre_tasks:
+  - fail: msg="{{ item }} should be set"
+    when: lookup('vars', item) is undefined
+    with_items:
+      - pve_address
+      - pve_login
+      - pve_password
+  roles:
+    - make-example-stack

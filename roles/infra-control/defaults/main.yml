@@ -1,0 +1,9 @@
+---
+
+pass_secrets:
+  - id: "ansible/vault-pass/{{ env_name }}"
+    dest: "{{ lookup('env', 'PWD') }}/.pass-{{ env_name }}"
+    comment: ansible vault password
+  - id: "infra/robot_key"
+    dest: "{{ lookup('env', 'PWD') }}/.tmp/robot_key"
+    comment: ssh key for the deployed nodes
