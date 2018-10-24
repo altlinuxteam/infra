@@ -674,7 +674,7 @@ def create_vm(module, proxmox, vmid, newid, node, name, memory, cpu, cores, sock
     only_v4 = ['force', 'protection', 'skiplock']
 
     # valide clone parameters
-    valid_clone_params = ['format', 'full', 'pool', 'snapname', 'storage', 'target']
+    valid_clone_params = ['full', 'pool', 'snapname', 'target']
     clone_params = {}
     # Default args for vm. Note: -args option is for experts only. It allows you to pass arbitrary arguments to kvm.
     vm_args = "-serial unix:/var/run/qemu-server/{}.serial,server,nowait".format(vmid)
