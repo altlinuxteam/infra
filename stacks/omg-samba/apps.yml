@@ -29,12 +29,6 @@ apps:
       samba_flavor: replica
     binds:
     - "dc1"
-- #step3
-  - name: samba
-    vars:
-      <<: *samba_params
-      samba_flavor: replica
-    binds:
     - "dc2"
 
   - name: samba
@@ -42,3 +36,12 @@ apps:
       <<: *samba_params
       samba_flavor: client
     binds: [ "cl0", "clw0" ]
+
+- #step3
+  - name: samba
+    vars:
+      <<: *samba_params
+      samba_flavor: gen_test_env
+      samba_generate_domain_config: true
+      samba_domain_config_output: ".tmp/domain_config"
+    binds: [ "dc0" ]
