@@ -141,7 +141,7 @@
 
 - name: store public ssh host key in local file
   lineinfile:
-    line: "{{ inventory_hostname_short}} {{ host_key.content }}"
+    line: "{{ inventory_hostname_short}} {{ host_key.content | b64decode }}"
     path: ".tmp/{{ stack_name }}.known_hosts"
     create: yes
   delegate_to: localhost
