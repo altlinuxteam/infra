@@ -129,6 +129,23 @@
     group: root
     mode: 0644
 
+- name: fetch ssh host keys
+  fetch:
+    src: /etc/openssh/ssh_host_rsa_key.pub
+    dest: ".tmp/{{ inventory_hostname_short }}.ssh_host_rsa_key.pub"
+
+- name: read public ssh host key
+  slurp:
+    src: /etc/openssh/ssh_host_rsa_key.pub
+  register: host_key
+
+- name: store public ssh host key in local file
+  lineinfile:
+    line: "{{ inventory_hostname_short}} {{ host_key.content }}"
+    path: ".tmp/{{ stack_name }}.known_hosts"
+    create: yes
+  delegate_to: localhost
+
 - name: mount nfs shares
   mount:
     src: "{{item.from}}"
