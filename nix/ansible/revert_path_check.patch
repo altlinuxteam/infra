@@ -1,0 +1,12 @@
+--- a/lib/ansible/plugins/connection/local.py 1970-01-01 00:00:01.000000000 +0000
++++ b/lib/ansible/plugins/connection/local.py  2018-10-25 11:19:32.820130379 +0000
+@@ -65,10 +65,6 @@
+ 
+         executable = C.DEFAULT_EXECUTABLE.split()[0] if C.DEFAULT_EXECUTABLE else None
+ 
+-        if not os.path.exists(to_bytes(executable, errors='surrogate_or_strict')):
+-            raise AnsibleError("failed to find the executable specified %s."
+-                               " Please verify if the executable exists and re-try." % executable)
+-
+         display.vvv(u"EXEC {0}".format(to_text(cmd)), host=self._play_context.remote_addr)
+         display.debug("opening command with Popen()")

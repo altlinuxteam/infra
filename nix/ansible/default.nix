@@ -12,13 +12,15 @@ pythonPackages.buildPythonPackage rec {
   src = fetchFromGitHub {
     owner = "ansible";
     repo = "ansible";
-    rev = "f0fd0f219de80a8f682b80e1ccdb83fd4988da64";
-    sha256 = "128847r4bc650lcpc2z1wxjgdnh07zhxfd9m2bi3wfl069dvhjk9";
+    rev = "1724b633f2fdc4c8d49e634d44864ef5e2e2d4c6";
+    sha256 = "0lnql1ilcz174c0vy9hz8wa099x4z253izf55akji5b6ng31yqkv";
   };
 
   prePatch = ''
     sed -i "s,/usr/,$out," lib/ansible/constants.py
   '';
+
+  patches = [ ./revert_path_check.patch ];
 
   doCheck = false;
   dontStrip = true;
