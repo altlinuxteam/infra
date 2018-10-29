@@ -11,6 +11,7 @@ python27.pkgs.buildPythonPackage rec {
     sha256 = "145hvphvlzvwq6sn31ldnin0ii50blsapxz0gv2zx3grzp6x9hvh";
   };
 
+  patches = [ ./show_reason_on_exceptions.patch ];
   doCheck = false;
 
   meta = {

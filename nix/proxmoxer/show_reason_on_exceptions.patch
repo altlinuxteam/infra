@@ -1,0 +1,11 @@
+--- a/proxmoxer/core.py   1970-01-01 04:00:01.000000000 +0400
++++ b/proxmoxer/core.py   2018-10-29 15:21:20.241881023 +0400
+@@ -76,7 +76,7 @@
+ 
+         if resp.status_code >= 400:
+             raise ResourceException("{0} {1}: {2}".format(resp.status_code, httplib.responses[resp.status_code],
+-                                                          resp.content))
++                                                          resp.reason))
+         elif 200 <= resp.status_code <= 299:
+             return self._store["serializer"].loads(resp)
+
