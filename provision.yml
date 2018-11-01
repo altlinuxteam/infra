@@ -22,6 +22,7 @@
 - name: prepare nodes
   hosts: stack
   gather_facts: false
+  strategy: free
   pre_tasks:
     - meta: end_play
       when: destroy_all is defined and destroy_all
@@ -31,4 +32,18 @@
   roles:
   - {role: prepare-config, tags: [ ]}
   - {role: common, tags: [ ]}
+  tags: [ prepare ]
+
+- name: put ssh host keys to all nodes
+  hosts: stack
+  gather_facts: false
+  strategy: free
+  tasks:
+    - name: put keys to known hosts
+      copy:
+        src: ".tmp/{{ stack_name }}.known_hosts"
+        dest: "/etc/openssh/known_hosts"
+        owner: root
+        group: root
+        mode: 0644
   tags: [ prepare ]

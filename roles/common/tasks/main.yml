@@ -129,18 +129,14 @@
     group: root
     mode: 0644
 
-- name: fetch ssh host keys
-  fetch:
-    src: /etc/openssh/ssh_host_rsa_key.pub
-    dest: ".tmp/{{ inventory_hostname_short }}.ssh_host_rsa_key.pub"
-
 - name: read public ssh host key
   slurp:
-    src: /etc/openssh/ssh_host_rsa_key.pub
+    src: /etc/openssh/ssh_host_ed25519_key.pub
   register: host_key
 
 - name: store public ssh host key in local file
   lineinfile:
+    regexp: "^{{ inventory_hostname_short}} "
     line: "{{ inventory_hostname_short}} {{ host_key.content | b64decode }}"
     path: ".tmp/{{ stack_name }}.known_hosts"
     create: yes
