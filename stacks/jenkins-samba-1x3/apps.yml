@@ -37,3 +37,10 @@ apps:
       samba_generate_domain_config: true
       samba_domain_config_output: ".tmp/domain_config"
     binds: [ "dc0" ]
+
+- #step4
+  - name: sssd-adgpo-test
+    binds: ["dc0", "cl0", "clw0", "clw1" ]
+    vars:
+      <<: *samba_params
+      samba_clients: [ "cl0", "clw0", "clw1" ]
