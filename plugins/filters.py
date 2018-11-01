@@ -103,6 +103,12 @@ def filter_dict(src, pred):
     p = eval(pred)
     return { k: v for k, v in src.iteritems() if p(v)}
 
+def format2(what, fmt):
+    return fmt % what
+
+def domain2dn(domain):
+    return ','.join('DC=%s' % s for s in domain.split('.'))
+
 class FilterModule(object):
     ''' Query filter '''
     def filters(self):
@@ -114,5 +120,7 @@ class FilterModule(object):
             'gen_nics_addrs': gen_nics_addrs,
             'list_to_dict': list_to_dict,
             'get_steps': get_steps,
-            'filter_dict': filter_dict
+            'filter_dict': filter_dict,
+            'format2': format2,
+            'domain2dn': domain2dn
         }
