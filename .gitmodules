@@ -8,3 +8,7 @@
 [submodule "roles/tftp"]
 	path = roles/tftp
 	url = https://github.com/altlinuxteam/ansible-tftp.git
+[submodule "sssd-adgpo-test-role"]
+	path = roles/sssd-adgpo-test
+	url = https://github.com/altlinuxteam/ansible-sssd-adgpo-test.git
+	branch = master
