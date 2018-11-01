@@ -21,6 +21,7 @@
       api_host: "{{env.pve.api_url}}"
       name: "{{vm_name}}"
       state: stopped
+      timeout: 120
   - name: destroying vm
     proxmox_kvm:
       node: srv
