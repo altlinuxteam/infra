@@ -7,18 +7,8 @@
     loop_control:
       loop_var: n
     register: res
-    #  when: st.nodes[item].provider != 'bare'
-
-    #- debug: msg="{{env}}"
-
-    #- set_fact:
-    #gen_nodes: "{{ dict({item: env['bare'][ st.nodes[item]['env_node'] ]}) }}"
-    #when: st.nodes[item].provider == 'bare'
-
-    #- debug: msg="{{gen_nodes}}"
 
 - set_fact:
     tmp_nodes: []
 - set_fact:
     gen_nodes: "{{ (res.results | map(attribute='ansible_facts.node') | list) + gen_nodes }}"
-    #  when: st.nodes[item].provider != 'bare'
