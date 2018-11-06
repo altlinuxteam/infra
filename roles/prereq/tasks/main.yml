@@ -1,0 +1,4 @@
+---
+- name: install python distutils
+  raw: apt-get install -qy python-modules-distutils
+  when: node.platform is undefined

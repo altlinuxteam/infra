@@ -17,6 +17,7 @@
   - {role: pve, tags: [ ]}
   - {role: lxc, tags: [ ]}
   - {role: inventory, bootstrap: yes, tags: [ ]}
+  - {role: prereq, tags: [ ]}
   tags: [ provision ]
 
 - name: prepare nodes
