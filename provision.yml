@@ -17,7 +17,6 @@
   - {role: pve, tags: [ ]}
   - {role: lxc, tags: [ ]}
   - {role: inventory, bootstrap: yes, tags: [ ]}
-  - {role: prereq, tags: [ ]}
   tags: [ provision ]
 
 - name: prepare nodes
@@ -34,6 +33,7 @@
       when: destroy_all is not defined or not destroy_all
   roles:
   - {role: prepare-config, tags: [ ]}
+  - {role: prereq, tags: [ ]}
   - {role: common, tags: [ ]}
   tags: [ prepare ]
 
