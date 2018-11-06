@@ -31,7 +31,7 @@ nodes:
   clw:
     type: pve
     arch: "x86_64"
-    count: 1
+    count: 3
     cpus: 1
     cores: 2
     mem: 1024
