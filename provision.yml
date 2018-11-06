@@ -19,6 +19,12 @@
   - {role: inventory, bootstrap: yes, tags: [ ]}
   tags: [ provision ]
 
+- name: configure prerequrements
+  hosts: stack
+  gather_facts: false
+  roles:
+  - {role: prereq, tags: [ ]}
+
 - name: prepare nodes
   hosts: stack
   gather_facts: false
@@ -33,7 +39,6 @@
       when: destroy_all is not defined or not destroy_all
   roles:
   - {role: prepare-config, tags: [ ]}
-  - {role: prereq, tags: [ ]}
   - {role: common, tags: [ ]}
   tags: [ prepare ]
 
