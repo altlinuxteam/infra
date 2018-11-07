@@ -90,6 +90,11 @@
   async: 100
   poll: 0
 
+- name: restart network service
+  service:
+    name: network
+    state: restarted
+
 - name: update .tmp/ssh_config after NICs reconfiguration
   include_role: name="inventory"
 
