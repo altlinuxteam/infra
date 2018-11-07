@@ -1,6 +1,6 @@
 ---
 - name: "{{nic.key}} | set default route"
-  shell: egrep -q "^default via {{item|ipaddr('address')}}$" /etc/net/ifaces/"{{nic.key}}"/ipv4route || { alterator-cmdline -d /net-eth action write name "{{nic.key}}" ipv 4 configuration "static" default "{{item|ipaddr('address')}}" ipv_enabled "#t"; echo default_changed; }
+  shell: egrep -q "^default via {{item|ipaddr('address')}}$" /etc/net/ifaces/"{{nic.key}}"/ipv4route || { alterator-cmdline -d /net-eth action write name "{{nic.key}}" ipv 4 configuration "static" default "{{item|ipaddr('address')}}" ipv_enabled "#t" controlled etcnet onboot '#t'; echo default_changed; }
   register: result
   changed_when: '"default_changed" in result.stdout'
   notify: restart network
