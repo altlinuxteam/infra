@@ -90,6 +90,18 @@
   async: 100
   poll: 0
 
+- name: enable interfaces
+  replace:
+    path: "/etc/net/ifaces/{{item.key}}/options"
+    regexp: '^DISABLED=.*'
+    replace: 'DISABLED=no'
+  with_dict: "{{node.net}}"
+
+- name: restart network
+  service:
+    name: network
+    state: restarted
+
 - name: update .tmp/ssh_config after NICs reconfiguration
   include_role: name="inventory"
 
