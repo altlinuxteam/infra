@@ -129,18 +129,10 @@
     group: root
     mode: 0644
 
-- name: read public ssh host key
-  slurp:
-    src: /etc/openssh/ssh_host_ed25519_key.pub
-  register: host_key
-
-- name: store public ssh host key in local file
-  lineinfile:
-    regexp: "^{{ inventory_hostname_short}} "
-    line: "{{ inventory_hostname_short}},{{ inventory_hostname_short }}.{{ stack.domain | lower }} {{ host_key.content | b64decode | trim }}"
-    path: ".tmp/{{ stack_name }}.known_hosts"
-    create: yes
-  delegate_to: localhost
+- name: fetch ssh host keys
+  fetch:
+    src: /etc/openssh/ssh_host_rsa_key.pub
+    dest: ".tmp/{{ inventory_hostname_short }}.ssh_host_rsa_key.pub"
 
 - name: mount nfs shares
   mount:

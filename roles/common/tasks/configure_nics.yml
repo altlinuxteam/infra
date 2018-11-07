@@ -22,7 +22,7 @@
   when: nic.value.search is defined
 
 - name: "{{nic.key}} | set IP addresses (async)"
-  shell: egrep -q "^{{item|ipaddr('address')}}/{{item|ipaddr('prefix')}}$" /etc/net/ifaces/"{{nic.key}}"/ipv4address || { alterator-cmdline -d /net-eth action add_iface_address name "{{nic.key}}" addip "{{item|ipaddr('address')}}" addmask "{{item|ipaddr('prefix')}}" disabled no ipv 4 configuration "static" ipv_enabled "#t"; echo addr_changed; }
+  shell: egrep -q "^{{item|ipaddr('address')}}/{{item|ipaddr('prefix')}}$" /etc/net/ifaces/"{{nic.key}}"/ipv4address || { alterator-cmdline -d /net-eth action add_iface_address name "{{nic.key}}" addip "{{item|ipaddr('address')}}" addmask "{{item|ipaddr('prefix')}}" ipv 4 configuration "static" ipv_enabled "#t"; echo addr_changed; }
   register: result
   changed_when: result.stdout is defined and '"addr_changed" in result.stdout'
   notify: restart network
