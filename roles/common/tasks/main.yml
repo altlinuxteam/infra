@@ -85,7 +85,9 @@
       #  when: node.net is defined
 
 - name: apply NICs config
-  command: 'alterator-cmdline /net-eth action write commit "#t"; service network restart'
+  shell: |
+    alterator-cmdline /net-eth action write commit "#t"
+    service network restart
   changed_when: false
   async: 100
   poll: 0
