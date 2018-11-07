@@ -33,9 +33,15 @@
   shell: apt-get update
 
 - name: include additional apt repos from tasks
-  template:
-    src: "apt.list.tasks.j2"
-    dest: "/etc/apt/sources.list.d/tasks.list"
+  block:
+    - name: include additional apt repos from tasks
+      template:
+        src: "apt.list.tasks.j2"
+        dest: "/etc/apt/sources.list.d/tasks.list"
+    - name: update with tasks repos
+      shell: |
+        apt-get update
+        apt-get dist-upgrade
   when: stack.apt_sources_from_tasks is defined
 
 - name: allow apt downgrade packages
