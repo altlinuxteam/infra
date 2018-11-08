@@ -42,7 +42,7 @@
       shell: |
         apt-get update
         apt-get dist-upgrade -yq
-  when: stack.apt_sources_from_tasks is defined
+  when: stack.apt_sources_from_tasks is defined and stack.apt_sources_from_tasks | length > 0
 
 - name: allow apt downgrade packages
   template:
