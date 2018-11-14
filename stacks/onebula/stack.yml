@@ -1,5 +1,6 @@
 ---
 name: onebula
+domain: srt.basealt.ru
 nodes:
   one:
     type: pve
