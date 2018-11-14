@@ -14,7 +14,13 @@ apps:
   - name: opennebula
     vars:
       <<: *one_params
+      one_flavor: server
     binds:
     - "one0"
+
+  - name: opennebula
+    vars:
+      <<: *one_params
+      one_flavor: sunstone
     - "one1"
     - "one2"
