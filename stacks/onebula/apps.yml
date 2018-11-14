@@ -22,5 +22,6 @@ apps:
     vars:
       <<: *one_params
       one_flavor: sunstone
+    bins:
     - "one1"
     - "one2"
