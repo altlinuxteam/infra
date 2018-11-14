@@ -1,0 +1,18 @@
+---
+one_params: &one_params
+  one_cluster_name: "srt"
+  one_groups:
+    - "devs"
+    - "automation"
+
+apt_sources_from_tasks: []
+
+apps:
+- # step1
+  - name: opennebula
+    vars:
+      <<: *one_params
+    binds:
+    - "one0"
+    - "one1"
+    - "one2"

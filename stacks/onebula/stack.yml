@@ -1,0 +1,21 @@
+---
+name: onebula
+nodes:
+  one:
+    type: pve
+    arch: "x86_64"
+    count: 3
+    cpus: 1
+    cores: 2
+    mem: 1024
+    template: alt-server-sisyphus-x64-20181106
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 994
+        descr: pub
+        ipv4:
+        - "10.64.84.240/24"
+        default: "10.64.84.1"
+        nameservers:
+        - "8.8.8.8"
