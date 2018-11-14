@@ -12,3 +12,6 @@
 	path = roles/sssd-adgpo-test
 	url = https://github.com/altlinuxteam/ansible-sssd-adgpo-test.git
 	branch = master
+[submodule "roles/opennebula"]
+	path = roles/opennebula
+	url = https://github.com/altlinuxteam/ansible-opennebula.git
