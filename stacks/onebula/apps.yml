@@ -1,6 +1,7 @@
 ---
 one_params: &one_params
   one_default_admin_password: "bebebe"
+  one_default_sunstone_user: "sunstone"
   one_default_sunstone_password: "bebebe2"
   one_server_entrypoint_address: "10.64.84.240"
   one_server_entrypoint_port: "2633"
