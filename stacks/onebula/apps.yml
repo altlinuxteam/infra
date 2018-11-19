@@ -18,7 +18,12 @@ apps:
       <<: *one_params
       one_flavor: server
     binds:
-    - "one0"
+    - "ones0"
+
+  - name: opennebula
+    vars:
+      <<: *one_params
+      one_flawor: "worker-kvm"
 
 - # step2
   - name: opennebula
@@ -26,5 +31,4 @@ apps:
       <<: *one_params
       one_flavor: sunstone
     binds:
-    - "one1"
-    - "one2"
+    - "onef0"

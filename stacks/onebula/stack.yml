@@ -2,16 +2,16 @@
 name: onebula
 domain: srt.basealt.ru
 nodes:
-  one:
+  onef: &onef
     type: pve
     arch: "x86_64"
-    count: 3
+    count: 1
     cpus: 1
-    cores: 2
-    mem: 1024
+    cores: 1
+    mem: 4096
     template: alt-server-sisyphus-x64-20181106
     net:
-      eth0:
+      eth0: &eth0
         bridge: "vmbr1"
         tag: 994
         descr: pub
@@ -20,3 +20,21 @@ nodes:
         default: "10.64.84.1"
         nameservers:
         - "8.8.8.8"
+
+  ones:
+    <<: *onef
+    mem: 1024
+    net:
+      eth0:
+        <<: *eth0
+        ipv4:
+        - "10.64.84.244/24"
+
+  onew:
+    <<: *onef
+    mem: 4096
+    net:
+      eth0:
+        <<: *eth0
+        ipv4:
+        - "10.64.84.246/24"
