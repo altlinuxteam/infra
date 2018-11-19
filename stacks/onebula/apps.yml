@@ -24,6 +24,8 @@ apps:
     vars:
       <<: *one_params
       one_flawor: "worker-kvm"
+    binds:
+    - "onew0"
 
 - # step2
   - name: opennebula
