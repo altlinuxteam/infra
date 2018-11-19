@@ -23,7 +23,7 @@ apps:
   - name: opennebula
     vars:
       <<: *one_params
-      one_flawor: "worker-kvm"
+      one_flavor: "worker-kvm"
     binds:
     - "onew0"
 
