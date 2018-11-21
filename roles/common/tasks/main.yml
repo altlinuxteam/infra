@@ -108,14 +108,7 @@
 
 # TODO: need to make it idempotent!
 - name: set hostname
-  shell: '[[ $(hostname -s) == "{{inventory_hostname_short}}" ]] || { alterator-cmdline -d /net-eth action write computer_name "{{inventory_hostname_short}}" commit "#t"; echo changed; }'
-  register: result
-  notify: restart network
-  changed_when: '"changed" in result.stdout'
-
-- name: set domainname
-  #  shell: '[[ $(domainname) == "{{stack.domain}}" ]] || { alterator-cmdline -d /net-domain action write domain "{{stack.domain}}" domain_type "dns" commit "#t"; echo changed; }'
-  shell: '[[ $(domainname) == "{{stack.domain}}" ]] || { domainname "{{stack.domain}}"; echo changed; }'
+  shell: '[[ $(hostname) == "{{inventory_hostname_short}}.{{stack.domain}}" ]] || { alterator-cmdline -d /net-eth action write computer_name "{{inventory_hostname_short}}.{{stack.domain}}" commit "#t"; echo changed; }'
   register: result
   notify: restart network
   changed_when: '"changed" in result.stdout'
