@@ -34,3 +34,13 @@ apps:
       one_flavor: sunstone
     binds:
     - "onef0"
+
+- # step3 distribute keys among nodes
+  - name: opennebula
+    vars:
+      <<: *one_params
+      one_flavor: distribute_keys
+    binds:
+    - "ones0"
+    - "onef0"
+    - "onew0"
