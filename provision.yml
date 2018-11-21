@@ -22,7 +22,7 @@
 - name: prepare nodes
   hosts: stack
   gather_facts: false
-  # cannot use free strategy due usage of add_host after 
+  # cannot use free strategy due usage of add_host after
   # NICs reconfiguration
   #strategy: free
   pre_tasks:
@@ -54,4 +54,11 @@
         owner: root
         group: root
         mode: 0644
+    - name: register nodes in /etc/hosts
+      lineinfile:
+        dest: /etc/hosts regexp=".*{{ item }}$"
+        line: "{{ hostvars[item].ansible_default_ipv4.address }} {{ item }}"
+        state: present
+      when: hostvars[item].ansible_default_ipv4.address is defined
+      with_items: play_hosts
   tags: [ prepare ]
