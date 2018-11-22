@@ -10,6 +10,7 @@ samba_parameters: &samba_params
   samba_network: 10.64.6.0/24 # need to determine which interface should be used for samba connection
 
 apt_sources_from_tasks: []
+apt_sources_from_tasks_distupgrade: []
 #  - "210899"
 #  - {id: "207234", binds: [ "dc1", "cl0" ]}
 
@@ -44,4 +45,3 @@ apps:
     vars:
       <<: *samba_params
       samba_clients: [ "clw0", "clw1", "clw2" ]
-
