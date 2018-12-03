@@ -5,7 +5,7 @@ samba_parameters: &samba_params
   samba_admin_pass: peebieY4
   samba_dns_forward: 8.8.8.8
   samba_dns_backend: SAMBA_INTERNAL
-  samba_master_hostname: dc0 # need to get it automatically somehow
+  samba_master_hostname: dc0.domain.alt # need to get it automatically somehow
   samba_master_address: 10.64.6.1 # need to get it automatically somehow
   samba_network: 10.64.6.0/24 # need to determine which interface should be used for samba connection
 
