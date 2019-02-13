@@ -82,11 +82,6 @@ nodes:
         ipv4: [ "10.64.85.251/24" ]
       eth10:
         bridge: "vmbr1"
-        tag: 996
-        descr: asheplyakov-stands
-        ipv4: [ "10.64.86.251/24" ]
-      eth11:
-        bridge: "vmbr1"
         tag: 997
         descr: iv-stands
         ipv4: [ "10.64.87.251/24" ]
@@ -162,11 +157,6 @@ nodes:
         descr: jqt4-stands
         ipv4: [ "10.64.85.252/24" ]
       eth10:
-        bridge: "vmbr1"
-        tag: 996
-        descr: asheplyakov-stands
-        ipv4: [ "10.64.86.252/24" ]
-      eth11:
         bridge: "vmbr1"
         tag: 997
         descr: iv-stands
