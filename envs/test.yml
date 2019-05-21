@@ -337,3 +337,59 @@ users:
       =T2E+
       -----END PGP PUBLIC KEY BLOCK-----
 
+  nir:
+    ssh-key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOTnccxeEd962m8RQQ7dA8D+dU/9dVJzgybb6Y4+ya0s nir@altlinux.org"
+    pgp-key: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+      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
+      +qyZ5ajd
+      =9Rqk
+      -----END PGP PUBLIC KEY BLOCK-----
+
