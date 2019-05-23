@@ -1,7 +1,29 @@
-# Prepare
+# Samba DC testing infrastructure deployment
+
+
+## Contents
+
+* [Prerequisites](#prerequisites)
+* [Quickstart](#quickstart)
+
+* * *
+
+
+## Prerequisites
+
+* Ansible with necessary Python modules installed;
+* Git with git-subtree module installed.
+
+
+## Quickstart
+
 install prerequired ansible 2.6+ and python modules
 ```sh
-apt-get install ansible python-module-proxmoxer python-module-jmespath python-module-netaddr
+apt-get install ansible \
+    python-module-proxmoxer \
+    python-module-jmespath \
+    python-module-netaddr \
+    git-subtree
 ```
 
 init submodules and pull infra-conf repository
