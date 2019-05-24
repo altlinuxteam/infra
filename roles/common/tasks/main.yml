@@ -32,8 +32,11 @@
 - name: update packages list
   shell: apt-get update
 
+- name: update apt and rpm
+  shell: apt-get install -y apt rpm
+
 - name: dist-upgrade
-  shell: apt-get install -y apt rpm && apt-get -y dist-upgrade
+  shell: apt-get -y dist-upgrade
 
 - name: include additional apt repos from tasks
   block:
