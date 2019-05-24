@@ -1,0 +1,84 @@
+---
+name: omg-samba
+domain: domain.alt
+nodes:
+  dc:
+    type: pve
+    arch: "x86_64"
+    platform: "p8"
+    count: 3
+    cpus: 1
+    cores: 2
+    mem: 1024
+    #template: alt-srv-sysiphus-x86
+    template: alt-srv-82-x64
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 994
+        descr: pub
+        ipv4:
+        - "10.64.84.10/24"
+        default: "10.64.84.1"
+        nameservers:
+        - "8.8.8.8"
+      eth1:
+        bridge: "vmbr1"
+        tag: 940
+        descr: priv
+        ipv4:
+        - "10.64.6.1/24"
+        search:
+        - "domain.alt"
+  cl: &cl_params
+    type: pve
+    arch: "x86_64"
+    platform: "p8"
+    count: 1
+    cpus: 1
+    cores: 2
+    mem: 1024
+    template: alt-workstation-82-x64-latest
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 994
+        descr: pub
+        ipv4:
+        - "10.64.84.100/24"
+        default: "10.64.84.1"
+        nameservers:
+        - "8.8.8.8"
+      eth1:
+        bridge: "vmbr1"
+        tag: 940
+        descr: priv
+        ipv4:
+        - "10.64.6.200/24"
+        nameservers:
+        - "10.64.6.1"
+        search:
+        - "domain.alt"
+  clw:
+    <<: *cl_params
+    template: alt-kworkstation-82-x64-latest
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 994
+        descr: pub
+        ipv4:
+        - "10.64.84.110/24"
+        default: "10.64.84.1"
+        nameservers:
+        - "8.8.8.8"
+      eth1:
+        bridge: "vmbr1"
+        tag: 940
+        descr: priv
+        ipv4:
+        - "10.64.6.210/24"
+        nameservers:
+        - "10.64.6.1"
+        search:
+        - "domain.alt"

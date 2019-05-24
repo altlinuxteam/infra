@@ -1,0 +1,58 @@
+---
+name: jenkins-samba-1x3-sisyphus
+domain: domain.alt
+nodes:
+  dc:
+    type: pve
+    arch: "x86_64"
+    count: 1
+    cpus: 1
+    cores: 2
+    mem: 1024
+    template: alt-server-sisyphus-x64-20181106
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 994
+        descr: pub
+        ipv4:
+        - "10.64.84.40/24"
+        default: "10.64.84.1"
+        nameservers:
+        - "8.8.8.8"
+      eth1:
+        bridge: "vmbr1"
+        tag: 942
+        descr: priv
+        ipv4:
+        - "10.64.6.1/24"
+        search:
+        - "domain.alt"
+  clw:
+    type: pve
+    arch: "x86_64"
+    count: 3
+    cpus: 1
+    cores: 2
+    mem: 1024
+    template: alt-kworkstation-sisyphus-x64-20181106
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 994
+        descr: pub
+        ipv4:
+        - "10.64.84.140/24"
+        default: "10.64.84.1"
+        nameservers:
+        - "8.8.8.8"
+      eth1:
+        bridge: "vmbr1"
+        tag: 942
+        descr: priv
+        ipv4:
+        - "10.64.6.200/24"
+        nameservers:
+        - "10.64.6.1"
+        search:
+        - "domain.alt"
