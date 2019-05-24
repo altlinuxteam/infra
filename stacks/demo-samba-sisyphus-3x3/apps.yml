@@ -2,7 +2,7 @@
 samba_parameters: &samba_params
   samba_realm: "demo.alt" #"{{stack.domain}}"
   samba_domain: "demo" #"{{stack.domain.split('.')[0]}}"
-  samba_admin_pass: pas$word1
+  samba_admin_pass: pAssword1
   samba_dns_forward: 8.8.8.8
   samba_dns_backend: SAMBA_INTERNAL
   samba_master_hostname: dc0.demo.alt # need to get it automatically somehow
