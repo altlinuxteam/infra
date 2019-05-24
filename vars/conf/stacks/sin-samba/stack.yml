@@ -1,0 +1,60 @@
+---
+name: sin-samba
+domain: domain.alt
+nodes:
+  dc:
+    type: pve
+    arch: "x86_64"
+    platform: "p8"
+    count: 3
+    cpus: 1
+    cores: 2
+    mem: 1024
+    template: alt-srv-82-x64
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 992
+        descr: pub
+        ipv4:
+        - "10.64.82.10/24"
+        default: "10.64.82.1"
+        nameservers:
+        - "8.8.8.8"
+      eth1:
+        bridge: "vmbr1"
+        tag: 920
+        descr: priv
+        ipv4:
+        - "10.64.6.1/24"
+        search:
+        - "domain.alt"
+  cl:
+    type: pve
+    arch: "x86_64"
+    platform: "p8"
+    count: 2
+    cpus: 1
+    cores: 2
+    mem: 1024
+    template: alt-workstation-82-x64
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 992
+        descr: pub
+        ipv4:
+        - "10.64.82.100/24"
+        default: "10.64.82.1"
+        nameservers:
+        - "8.8.8.8"
+      eth1:
+        bridge: "vmbr1"
+        tag: 920
+        descr: priv
+        ipv4:
+        - "10.64.6.200/24"
+        nameservers:
+        - "10.64.6.1"
+        search:
+        - "domain.alt"
