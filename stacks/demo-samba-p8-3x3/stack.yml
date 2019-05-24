@@ -1,0 +1,60 @@
+---
+name: demo-samba-3x3-p8
+domain: demo.alt
+nodes:
+  dc:
+    type: pve
+    arch: "x86_64"
+    platform: "p8"
+    count: 3
+    cpus: 1
+    cores: 2
+    mem: 1024
+    template: alt-srv-82-x64
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 962
+        descr: pub
+        ipv4:
+        - "10.64.62.20/24"
+        default: "10.64.62.1"
+        nameservers:
+        - "8.8.8.8"
+      eth1:
+        bridge: "vmbr1"
+        tag: 944
+        descr: priv
+        ipv4:
+        - "10.64.6.1/24"
+        search:
+        - "demo.alt"
+  clw:
+    type: pve
+    arch: "x86_64"
+    count: 3
+    platform: "p8"
+    cpus: 1
+    cores: 2
+    mem: 1024
+    template: alt-workstation-82-x64-latest
+    net:
+      eth0:
+        bridge: "vmbr1"
+        tag: 962
+        descr: pub
+        ipv4:
+        - "10.64.62.120/24"
+        default: "10.64.62.1"
+        nameservers:
+        - "8.8.8.8"
+      eth1:
+        bridge: "vmbr1"
+        tag: 944
+        descr: priv
+        ipv4:
+        - "10.64.6.100/24"
+        nameservers:
+        - "10.64.6.1"
+        search:
+        - "demo.alt"
