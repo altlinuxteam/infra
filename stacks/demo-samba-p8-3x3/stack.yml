@@ -10,7 +10,7 @@ nodes:
     cpus: 1
     cores: 2
     mem: 1024
-    template: alt-srv-82-x64
+    template: alt-srv-82-x64-latest
     net:
       eth0:
         bridge: "vmbr1"
