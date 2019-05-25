@@ -1,5 +1,5 @@
 ---
-name: omg-samba
+name: iv-samba
 domain: domain.alt
 nodes:
   dc:

@@ -22,7 +22,7 @@ nodes:
         - "8.8.8.8"
       eth1:
         bridge: "vmbr1"
-        tag: 942
+        tag: 946
         descr: priv
         ipv4:
         - "10.64.6.1/24"
@@ -48,7 +48,7 @@ nodes:
         - "8.8.8.8"
       eth1:
         bridge: "vmbr1"
-        tag: 942
+        tag: 946
         descr: priv
         ipv4:
         - "10.64.6.100/24"
