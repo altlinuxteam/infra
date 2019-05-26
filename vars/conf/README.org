@@ -1,4 +1,22 @@
-** Тестовое README
+#+TITLE: Конфигурация тестовой инфраструктуры
+#+DESCRIPTION: Конфигурация тестовой инфраструктуры
+#+LANGUAGE: ru
+#+OPTIONS: toc:nil
+
+
+#+TOC: headlines 2
+
+
+** Quickstart
+
+Установите необходимые зависимости:
+
+#+BEGIN_SRC bash
+apt-get install python3-module-yaml
+#+END_SRC
+
+
+** Et cetera
 
 *** Импорт ключей GPG себе
 
@@ -18,4 +36,3 @@
 #+BEGIN_SRC bash
     cat ./envs/prod.yml | yq -r '.users[]."pgp-key"' | gpg --import --allow-non-selfsigned-uid
 #+END_SRC
-

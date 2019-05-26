@@ -1,5 +1,5 @@
 ---
-name: onebula
+name: onebula-aio
 domain: srt.basealt.ru
 nodes:
   one: &onef
