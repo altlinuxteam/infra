@@ -9,14 +9,20 @@ nodes:
     cpus: 1
     cores: 1
     mem: 4096
-    template: alt-server-sisyphus-x64-20181106
+    template: alt-server-sisyphus-x64-20190525
     net:
       eth0: &eth0
         bridge: "vmbr1"
         tag: 994
-        descr: pub
+        descr: mgmt
         ipv4:
         - "10.64.84.250/24"
         default: "10.64.84.1"
         nameservers:
         - "8.8.8.8"
+      eth1: &eth1
+        bridge: "vmbr1"
+        tag: 948
+        descr: ovs-integration
+        ipv4:
+        - "10.64.7.250/24"

@@ -44,6 +44,16 @@ def dict_inject(data, path, obj):
     dict_merge(z, c)
     return z
 
+def get_nic_addr_with_name(stack_nodes, self_name, iface_descr):
+    res = {}
+    for n, vals in stack_nodes.items():
+        if n != self_name:
+            for i in vals['net']:
+                if vals['net'][i]['descr'] == iface_descr:
+                    addr = vals['net'][i]['ipv4'][0].split('/')[0]
+                    res[n] = {'ip4addr': addr}
+
+    return res
 
 def to_nics_dict(src):
     nics = {}
@@ -122,5 +132,6 @@ class FilterModule(object):
             'get_steps': get_steps,
             'filter_dict': filter_dict,
             'format2': format2,
-            'domain2dn': domain2dn
+            'domain2dn': domain2dn,
+            'get_nic_addr_with_name': get_nic_addr_with_name
         }

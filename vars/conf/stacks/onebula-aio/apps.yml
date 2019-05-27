@@ -5,6 +5,7 @@ one_params: &one_params
   one_server_entrypoint_port: "2633"
 
   one_cluster_name: "srt"
+  one_management_host: "one0"
   one_groups:
     - "devs"
     - "automation"
@@ -17,6 +18,13 @@ apps:
     vars:
       <<: *one_params
       one_flavor: server
+    binds:
+    - "one0"
+
+  - name: opennebula
+    vars:
+      <<: *one_params
+      one_flavor: management
     binds:
     - "one0"
 - # step2

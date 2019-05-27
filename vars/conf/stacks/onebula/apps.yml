@@ -3,6 +3,7 @@ one_params: &one_params
   one_default_admin_password: "bebebe"
   one_server_entrypoint_address: "10.64.84.240"
   one_server_entrypoint_port: "2633"
+  one_management_host: "ones0"
 
   one_cluster_name: "srt"
   one_groups:
@@ -23,17 +24,26 @@ apps:
   - name: opennebula
     vars:
       <<: *one_params
-      one_flavor: "worker-kvm"
+      one_flavor: management
     binds:
-    - "onew0"
+    - "ones0"
 
-- # step2
   - name: opennebula
     vars:
       <<: *one_params
       one_flavor: sunstone
     binds:
-    - "onef0"
+    - "ones0"
+
+- # step 2
+  - name: opennebula
+    vars:
+      <<: *one_params
+      one_flavor: "worker-kvm"
+    binds:
+    - "onew0"
+    - "onew1"
+    - "onew2"
 
 - # step3 distribute keys among nodes
   - name: opennebula
@@ -42,5 +52,6 @@ apps:
       one_flavor: distribute_keys
     binds:
     - "ones0"
-    - "onef0"
     - "onew0"
+    - "onew1"
+    - "onew2"
