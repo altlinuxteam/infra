@@ -3,13 +3,23 @@
   set_fact:
     pve_nodes: "{{stack.nodes | filter_dict(\"lambda x: x['type']=='pve'\")}}"
 
-- name: destroy VMs
-  include_tasks: destroy_vm.yml
-  with_items: "{{pve_nodes}}"
-  loop_control:
-      loop_var: tmp_node
+- name: make nodes list to destroy
+  set_fact:
+    destroy_nodes: "{{redeploy.split(',')}}"
+  when: redeploy is defined
+
+- name: destroy all nodes if asked
+  set_fact:
+    destroy_nodes: "{{pve_nodes}}"
   when: redeploy_all is defined and redeploy_all|bool == true
         or destroy_all is defined and destroy_all|bool == true
+
+- name: destroy VMs
+  include_tasks: destroy_vm.yml
+  with_items: "{{destroy_nodes}}"
+  loop_control:
+      loop_var: tmp_node
+  when: destroy_nodes is defined
 
 #- meta: end_play
 
