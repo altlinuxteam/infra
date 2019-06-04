@@ -5,7 +5,7 @@
   changed_when: '"default_changed" in result.stdout'
   notify: restart network
   with_items: "{{nic.value.default}}"
-  when: nic.value.default is defined
+  when: nic.value.default is defined and nic.value.descr != 'priv'
 
 - name: "{{nic.key}} | set nameservers"
   shell: awk '($1 ~ /nameserver/){ list=list" "$2; }END{print list;}' /etc/net/ifaces/"{{nic.key}}"/resolv.conf | egrep -q "^{{nic.value.nameservers|join(' ')}}$" || { alterator-cmdline -d /net-eth action write name "{{nic.key}}" ipv 4 configuration "static" dns "{{nic.value.nameservers|join(' ')}}" ipv_enabled "#t"; echo dns_changed; }
@@ -41,19 +41,8 @@
       line: "{{ (tbl_id | int) + 200 }} tbl_{{nic.key}}"
   - name: define routing rules
     shell: |
-      ip rule add from {{item|ipaddr('address')}}/{{item|ipaddr('prefix')}} lookup tbl_{{nic.key}}
-      ec=$?
-      if [[ $ec -eq 0 || $ec -eq 2 ]]; then
-        ip route add default via {{nic.value.default}} dev {{nic.key}} table tbl_{{nic.key}}
-        ec=$?
-        if [[ $ec -eq 0 || $ec -eq 2 ]]; then
-          /bin/true
-        else
-          /bin/false
-        fi
-      else
-        /bin/false
-      fi
+      ip rule add from {{item|ipaddr('address')}}/{{item|ipaddr('prefix')}} lookup tbl_{{nic.key}} || /bin/true
+      ip route add default via {{nic.value.default}} dev {{nic.key}} table tbl_{{nic.key}} || /bin/true
     with_items: "{{nic.value.ipv4}}"
     when: nic.value.ipv4 is defined and nic.value.default is defined
   when: node.net | length > 1 and nic.value.descr == 'priv'
