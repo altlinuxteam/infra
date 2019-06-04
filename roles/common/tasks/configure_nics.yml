@@ -29,11 +29,11 @@
   with_items: "{{nic.value.ipv4}}"
   when: nic.value.ipv4 is defined
 
-- name: "{{enable PBR for {{nic.key}}"
+- name: "enable PBR for {{nic.key}}"
   block:
   - name: Generate sequance
     set_fact:
-      tbl_id: "{{ nic.key | regex_replace('^eth\(d+\)', '\\1' }}"
+      tbl_id: nic.key | regex_replace('^eth(d+)', '\\1'
 
   - name: add table
     lineinfile:
@@ -42,7 +42,18 @@
   - name: define routing rules
     shell: |
       ip rule add from {{item|ipaddr('address')}}/{{item|ipaddr('prefix')}} lookup tbl_{{nic.key}}
-      ip route add default via {{nic.value.default[0]}} dev {{nic.key}} table tbl_{{nic.key}}
+      ec=$?
+      if [[ $ec -eq 0 || $ec -eq 2 ]]; then
+        ip route add default via {{nic.value.default}} dev {{nic.key}} table tbl_{{nic.key}}
+        ec=$?
+        if [[ $ec -eq 0 || $ec -eq 2 ]]; then
+          /bin/true
+        else
+          /bin/false
+        fi
+      else
+        /bin/false
+      fi
     with_items: "{{nic.value.ipv4}}"
     when: nic.value.ipv4 is defined and nic.value.default is defined
-  when: node.net | length > 1
+  when: node.net | length > 1 and nic.value.descr == 'priv'
