@@ -104,6 +104,12 @@
   async: 100
   poll: 0
 
+- name: configure PBR
+  include_tasks: configure_pbr.yml
+  with_dict: "{{node.net}}"
+  loop_control:
+      loop_var: nic
+
 - name: update .tmp/ssh_config after NICs reconfiguration
   include_role: name="inventory"
 
