@@ -39,10 +39,17 @@
     lineinfile:
       path: /etc/iproute2/rt_tables
       line: "{{ (tbl_id | int) + 200 }} tbl_{{nic.key}}"
+    notify: restart network
+  - name: "create config for {{nic.key}}"
+    file:
+      path: "/etc/net/ifaces/{{nic.key}}"
+      state: directory
   - name: define routing rules
-    shell: |
-      ip rule add from {{item|ipaddr('address')}}/{{item|ipaddr('prefix')}} lookup tbl_{{nic.key}} || /bin/true
-      ip route add default via {{nic.value.default}} dev {{nic.key}} table tbl_{{nic.key}} || /bin/true
+    template:
+      src: pbr_config.j2
+      dest: "/etc/net/ifaces/{{nic.key}}/ifup-post"
+      mode: '0755'
     with_items: "{{nic.value.ipv4}}"
+    notify: restart network
     when: nic.value.ipv4 is defined and nic.value.default is defined
   when: node.net | length > 1 and nic.value.descr == 'priv'

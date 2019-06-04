@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+ip rule add from {{item|ipaddr('address')}}/{{item|ipaddr('prefix')}} lookup tbl_{{nic.key}} || /bin/true
+ip route add default via {{nic.value.default}} dev {{nic.key}} table tbl_{{nic.key}} || /bin/true
