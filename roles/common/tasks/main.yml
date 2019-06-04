@@ -8,13 +8,6 @@
     delay: 3
     timeout: 60
 
-- name: disable rp_filter on all interfaces
-  shell: |
-    for DEV in /proc/sys/net/ipv4/conf/*/rp_filter
-    do
-      echo 0 > $DEV
-    done
-
 - name: disable apt-cache in tmpfs
   block:
     - lineinfile:
