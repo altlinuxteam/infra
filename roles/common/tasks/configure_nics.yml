@@ -28,3 +28,21 @@
   notify: restart network
   with_items: "{{nic.value.ipv4}}"
   when: nic.value.ipv4 is defined
+
+- name: "{{enable PBR for {{nic.key}}"
+  block:
+  - name: Generate sequance
+    set_fact:
+      tbl_id: "{{ nic.key | regex_replace('^eth\(d+\)', '\\1' }}"
+
+  - name: add table
+    lineinfile:
+      path: /etc/iproute2/rt_tables
+      line: "{{ (tbl_id | int) + 200 }} tbl_{{nic.key}}"
+  - name: define routing rules
+    shell: |
+      ip rule add from {{item|ipaddr('address')}}/{{item|ipaddr('prefix')}} lookup tbl_{{nic.key}}
+      ip route add default via {{nic.value.default[0]}} dev {{nic.key}} table tbl_{{nic.key}}
+    with_items: "{{nic.value.ipv4}}"
+    when: nic.value.ipv4 is defined and nic.value.default is defined
+  when: node.net | length > 1
