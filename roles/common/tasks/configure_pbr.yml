@@ -1,7 +1,7 @@
 ---
 - name: "enable PBR for {{nic.key}}"
   block:
-  - name: Generate sequance
+  - name: Generate sequence
     set_fact:
       tbl_id: nic.key | regex_replace('^eth(d+)', '\\1'
 

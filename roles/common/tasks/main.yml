@@ -104,12 +104,6 @@
   async: 100
   poll: 0
 
-- name: configure PBR
-  include_tasks: configure_pbr.yml
-  with_dict: "{{node.net}}"
-  loop_control:
-      loop_var: nic
-
 - name: update .tmp/ssh_config after NICs reconfiguration
   include_role: name="inventory"
 
@@ -117,6 +111,12 @@
   wait_for_connection:
     delay: 2
     timeout: 300
+
+- name: configure PBR
+  include_tasks: configure_pbr.yml
+  with_dict: "{{node.net}}"
+  loop_control:
+      loop_var: nic
 
 # TODO: need to make it idempotent!
 - name: set hostname
