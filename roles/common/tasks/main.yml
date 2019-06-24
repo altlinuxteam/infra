@@ -8,6 +8,15 @@
     delay: 3
     timeout: 60
 
+# Disable 'vagrant' user if exists. This operation is needed for boxes
+# designed to be used by Vagrant. We don't need 'vagrant' user because
+# there is a user named 'test' for our needs.
+- name: Disable vagrant user
+  user:
+    name: vagrant
+    state: absent
+    remove: yes
+
 - name: disable apt-cache in tmpfs
   block:
     - lineinfile:
