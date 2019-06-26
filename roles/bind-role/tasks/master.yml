@@ -1,6 +1,8 @@
 # roles/bind/tasks/master.yml
 # Set up a BIND master server
 ---
+- name: Master | Generate rndc.key
+  shell: rndc-confgen -a -b 128 -c /etc/rndc.key -k rndc-key
 
 - name: Master | Main BIND config file (master)
   template:
