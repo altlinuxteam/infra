@@ -150,6 +150,21 @@ options:
       - C(storage) is the storage identifier where to create the disk.
       - C(size) is the size of the disk in GB.
       - C(format) is the drive's backing file's data format. C(qcow2|raw|subvol).
+  ipconfig:
+    description:
+      - cloud-init: Specify IP addresses and gateways for the corresponding interface.
+      - IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.
+      - The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided.
+      - For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.
+      - If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+  sshkeys:
+    description:
+      - string with public ssh keys; one key per line
+  nameserver:
+    description:
+      - nameserver ip address
+  searchdomain:
+      - domain to search in
   keyboard:
     description:
       - Sets the keyboard layout for VNC server.
@@ -825,6 +840,10 @@ def main():
             hotplug=dict(type='str'),
             hugepages=dict(choices=['any', '2', '1024']),
             ide=dict(type='dict', default=None),
+            ipconfig0=dict(type='str', default=None),
+            sshkeys=dict(type='str', default=None),
+            nameserver=dict(type='str', default=None),
+            searchdomain=dict(type='str', default=None),
             keyboard=dict(type='str'),
             kvm=dict(type='bool', default='yes'),
             localtime=dict(type='bool'),
@@ -993,6 +1012,10 @@ def main():
                       hotplug=module.params['hotplug'],
                       hugepages=module.params['hugepages'],
                       ide=module.params['ide'],
+                      ipconfig0=module.params['ipconfig0'],
+                      sshkeys=module.params['sshkeys'],
+                      nameserver=module.params['nameserver'],
+                      searchdomain=module.params['searchdomain'],
                       keyboard=module.params['keyboard'],
                       kvm=module.params['kvm'],
                       localtime=module.params['localtime'],

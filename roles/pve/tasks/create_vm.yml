@@ -47,6 +47,10 @@
     net: "{{stack.nodes[node_name].net | to_proxmox_net}}"
     update: yes
     state: present
+#    ide: '{ide[2]: "local-lvm:cloudinit"}'
+    ipconfig0: "ip={{stack.nodes[node_name].net.eth0.ipv4[0]}},gw={{stack.nodes[node_name].net.eth0.default}}"
+    nameserver: "{{stack.nodes[node_name].net.eth0.nameservers[0]}}"
+    searchdomain: "{{stack.nodes[node_name].net.eth0.search[0]}}"
   register: vm_status
   until: vm_status is succeeded
   retries: 30
