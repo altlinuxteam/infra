@@ -1,8 +1,15 @@
 # {{ansible_managed}}
 {% if node.platform is defined %}
+
+{% if node.platform == 'c8' %}{# ALT Linux 8 SP distribution repos. #}
+rpm [cert8] http://ftp.altlinux.org/pub/distributions/ALTLinux {{ node.platform }}/branch/{{ node.arch }} classic
+rpm [cert8] http://ftp.altlinux.org/pub/distributions/ALTLinux {{ node.platform }}/branch/noarch classic
+{% else %}
 rpm [{{node.platform}}] {{env.apt.sources[item].url}} {{node.platform}}/branch/{{node.arch}} classic
 rpm [{{node.platform}}] {{env.apt.sources[item].url}} {{node.platform}}/branch/noarch classic
-{% else %}
+{% endif %}
+
+{% else %}{# Use Sisyphus in case "platform" is not defined. #}
 rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus x86_64 classic
 rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus noarch classic
 {% if node.arch == 'e2k' %}
