@@ -49,7 +49,7 @@
     state: present
 #    ide: '{ide[2]: "local-lvm:cloudinit"}'
     ipconfig0: "ip={{stack.nodes[node_name].net.eth0.ipv4[0]}},gw={{stack.nodes[node_name].net.eth0.default}}"
-    nameserver: "{{stack.nodes[node_name].net.eth0.nameservers[0]}}"
+    nameserver: "{{stack.nodes[node_name].net.eth0.nameservers[0] | default(omit)}}"
     searchdomain: "{{stack.nodes[node_name].net.eth0.search[0] | default(omit)}}"
   register: vm_status
   until: vm_status is succeeded
