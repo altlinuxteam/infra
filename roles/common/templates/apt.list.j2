@@ -4,8 +4,8 @@
 {% set url = env.apt[node.platform].url %}
 
 {% if node.platform is defined %}
-rpm [{{key}}] {{url}} {{bp}}/branch/{{node.arch}} classic
-rpm [{{key}}] {{url}} {{bp}}/branch/noarch classic
+rpm [{{key}}] {{url}} {{bp}}/{{node.arch}} classic
+rpm [{{key}}] {{url}} {{bp}}/noarch classic
 {% else %}
 rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus x86_64 classic
 rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus noarch classic
