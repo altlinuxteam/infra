@@ -1,0 +1,28 @@
+---
+- set_fact: node_name="{{inventory_hostname_short}}"
+- set_fact: vm_name="{{node_name}}.{{stack.name}}"
+
+- name: "[{{vm_name}}] enable all VLANs"
+  proxmox_kvm:
+    node: srv
+    api_user: "{{env.pve.username}}"
+    api_password: "{{env.pve.password}}"
+    api_host: "{{env.pve.api_url}}"
+    name: "{{vm_name}}"
+    agent: yes
+    cpu: host
+    kvm: yes
+    cores: "{{stack.nodes[node_name].cores}}"
+    memory: "{{stack.nodes[node_name].mem}}"
+    net: "{{stack.nodes[node_name].net | to_proxmox_net}}"
+    update: yes
+    state: present
+    ipconfig0: "ip={{stack.nodes[node_name].net.eth0.ipv4[0]}},gw={{stack.nodes[node_name].net.eth0.default}}"
+    nameserver: "{{stack.nodes[node_name].net.eth0.nameservers | default(omit) | first}}"
+    searchdomain: "{{stack.nodes[node_name].net.eth0.search | default(omit) | first}}"
+  register: vm_status
+  until: vm_status is succeeded
+  retries: 30
+  delay: 1
+  ignore_errors: yes
+  delegate_to: localhost

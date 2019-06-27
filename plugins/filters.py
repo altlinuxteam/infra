@@ -59,10 +59,13 @@ def to_nics_dict(src):
                                "addrs": addrs}
     return nics
 
-def to_proxmox_net(src):
+def to_proxmox_net(src, vlan=None):
     out = {}
     ks = ['virtio', 'bridge', 'tag']
     for k,v in src.items():
+        if k != 'eth0' and vlan:
+            v['tag'] = vlan
+
         k = k.replace('eth','net')
         [ v.pop(x, None) for x in set(v.keys()).difference(ks) ]
         v.pop('ipv4', None) # remove unused key

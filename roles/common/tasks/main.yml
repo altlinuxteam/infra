@@ -121,6 +121,14 @@
     delay: 2
     timeout: 300
 
+- debug: msg="{{hostvars['localhost']['other_nics_to_vlan']}}"
+
+- name: enable vlans on other interfaces
+  include_role:
+    name: pve
+    tasks_from: enable_vlans.yml
+  when: hostvars['localhost']['other_nics_to_vlan']
+
 - name: configure PBR
   include_tasks: configure_pbr.yml
   with_dict: "{{node.net}}"

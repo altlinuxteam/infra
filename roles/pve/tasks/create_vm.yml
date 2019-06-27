@@ -1,6 +1,7 @@
 ---
 - set_fact: node_name="{{tmp_node}}"
 - set_fact: vm_name="{{node_name}}.{{stack.name}}"
+- set_fact: other_nics_to_vlan=false
 
 - name: "[{{vm_name}}] clone VM"
   proxmox_kvm:
@@ -31,6 +32,24 @@
   delay: 1
   ignore_errors: yes
 
+- name: "[{{vm_name}}] get VM`s ip addresses"
+  proxmox_qemu_agent:
+    api_user: "{{env.pve.username}}"
+    api_password: "{{env.pve.password}}"
+    api_host: "{{env.pve.api_url}}"
+    name: "{{vm_name}}"
+    command: "network-get-interfaces"
+  register: res
+  until: res.results | json_query('[] | [?name!=`lo`]."ip-addresses" | [] | [?"ip-address-type"==`ipv4`] | []."ip-address"') | length > 0
+  retries: 3
+  delay: 1
+  ignore_errors: yes
+
+- set_fact: other_nics_to_vlan="{{env.pve.empty_vlan}}"
+  when: res.failed
+
+- debug: msg="{{hostvars['localhost']['other_nics_to_vlan']}}"
+
 - name: "[{{vm_name}}] configure VM"
   proxmox_kvm:
     node: srv
@@ -44,7 +63,7 @@
     cores: "{{stack.nodes[node_name].cores}}"
     memory: "{{stack.nodes[node_name].mem}}"
 #    storage: "{{env.pve.storage}}"
-    net: "{{stack.nodes[node_name].net | to_proxmox_net}}"
+    net: "{{stack.nodes[node_name].net | to_proxmox_net(other_nics_to_vlan)}}"
     update: yes
     state: present
 #    ide: '{ide[2]: "local-lvm:cloudinit"}'
