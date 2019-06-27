@@ -1,10 +1,11 @@
 # {{ansible_managed}}
 {% set key = env.apt[node.platform].key_name %}
 {% set bp  = env.apt[node.platform].branch_prefix %}
+{% set url = env.apt[node.platform].url %}
 
 {% if node.platform is defined %}
-rpm [{{key}}] {{env.apt.sources[item].url}} {{bp}}/branch/{{node.arch}} classic
-rpm [{{key}}] {{env.apt.sources[item].url}} {{bp}}/branch/noarch classic
+rpm [{{key}}] {{url}} {{bp}}/branch/{{node.arch}} classic
+rpm [{{key}}] {{url}} {{bp}}/branch/noarch classic
 {% else %}
 rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus x86_64 classic
 rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus noarch classic
