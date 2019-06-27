@@ -1,6 +1,6 @@
 # {{ansible_managed}}
-{% set key = env.apt.sources[item][node.platform].key_name %}
-{% set bp  = env.apt.sources[item][node.platform].branch_prefix %}
+{% set key = env.apt[node.platform].key_name %}
+{% set bp  = env.apt[node.platform].branch_prefix %}
 
 {% if node.platform is defined %}
 rpm [{{key}}] {{env.apt.sources[item].url}} {{bp}}/branch/{{node.arch}} classic
