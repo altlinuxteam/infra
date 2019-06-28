@@ -64,7 +64,7 @@
 
 - name: "grab rndc.key"
   fetch:
-    dest: "./.tmp/rndc.key"
+    dest: "./.tmp/"
     src: "/etc/rndc.key"
     flat: true
   when: key_generated is defined
