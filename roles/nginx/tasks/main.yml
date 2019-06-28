@@ -1,0 +1,15 @@
+---
+- name: prepare config for role
+  block:
+  - include_vars:
+      file: "conf/stacks/{{stack_name}}/apps/nginx.yml"
+      name: nginx
+  - set_fact: {'nginx_{{item.key}}': '{{item.value}}'}
+    with_dict: "{{nginx}}"
+
+- set_fact:
+    ansible_distribution: "ALT"
+    ansible_os_family: "ALT"
+
+- name: execute actual role
+  import_role: name=nginx-role
