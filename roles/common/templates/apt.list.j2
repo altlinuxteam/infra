@@ -1,18 +1,20 @@
 # {{ansible_managed}}
-{% set key = env.apt[node.platform].key_name %}
-{% set bp  = env.apt[node.platform].branch_prefix %}
-{% set url = env.apt[node.platform].url %}
-
-{% if node.platform is defined %}
-rpm [{{key}}] {{url}} {{bp}}/{{node.arch}} classic
-rpm [{{key}}] {{url}} {{bp}}/noarch classic
+{% if node.platform is not defined %}
+  {% set platform = "sisyphus" %}
 {% else %}
-rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus x86_64 classic
-rpm http://ftp.altlinux.org/pub/distributions/ALTLinux/Sisyphus noarch classic
+  {% set platform = node.platform %}
+{% endif %}
+
+{% set key = env.apt[platform].key_name %}
+{% set bp  = env.apt[platform].branch_prefix %}
+{% set url = env.apt[platform].url %}
+
 {% if node.arch == 'e2k' %}
 rpm {{env.apt.sources[item].url}}/e2k/deb e2k alien
 rpm {{env.apt.sources[item].url}}/e2k e2k hasher
 rpm {{env.apt.sources[item].url}}/e2k/misc noarch hasher
 rpm {{env.apt.sources[item].url}}/e2k/lcc-1.21.24 e2k alien
-{% endif %}
+{% else %}
+rpm [{{key}}] {{url}} {{bp}}/{{node.arch}} classic
+rpm [{{key}}] {{url}} {{bp}}/noarch classic
 {% endif %}
