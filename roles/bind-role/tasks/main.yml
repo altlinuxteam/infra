@@ -67,6 +67,7 @@
     dest: "./.tmp/"
     src: "/etc/rndc.key"
     flat: true
+    validate_checksum: false
   when: key_generated is defined
 
 - name: "put master rndc.key to slave"
