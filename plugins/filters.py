@@ -16,6 +16,17 @@ try:
 except ImportError:
     HAS_LIB = False
 
+class BetterIPv4Network(ipaddress.IPv4Network):
+  def __add__(self, offset):
+    """Add numeric offset to the IP."""
+    new_base_addr = int(self.network_address) + offset
+    return self.__class__((new_base_addr, str(self.netmask)))
+
+  def size(self):
+    """Return network size."""
+    start = int(self.network_address)
+    return int(self.broadcast_address) + 1 - start
+
 def dict_merge(dct, merge_dct):
     """ Recursive dict merge. Inspired by :meth:``dict.update()``, instead of
     updating only top-level keys, dict_merge recurses down into dicts nested
@@ -112,6 +123,15 @@ def format2(what, fmt):
 def domain2dn(domain):
     return ','.join('DC=%s' % s for s in domain.split('.'))
 
+def net_range_to_list(start_network, count=1):
+  network = BetterIPv4Network(start_network)
+  res = [start_network]
+  for i in range(1, count):
+    net = network + i * network.size()
+    res.append(str(net))
+
+  return res
+    
 class FilterModule(object):
     ''' Query filter '''
     def filters(self):
@@ -125,5 +145,6 @@ class FilterModule(object):
             'get_steps': get_steps,
             'filter_dict': filter_dict,
             'format2': format2,
-            'domain2dn': domain2dn
+            'domain2dn': domain2dn,
+            'net_range_to_list': net_range_to_list
         }
