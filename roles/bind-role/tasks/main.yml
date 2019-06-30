@@ -57,28 +57,23 @@
   register: reverse_hashes_ipv6
   with_items: "{{ bind_zone_ipv6_networks }}"
 
-- name: Generate rndc.key
-  shell: rndc-confgen -a -b 128 -c /etc/rndc.key -k rndc-key
-  register: key_generated
-  when: key_generated is not defined
-
-- name: "grab rndc.key"
-  fetch:
-    dest: "./.tmp/"
-    src: "/etc/rndc.key"
-    flat: true
-    validate_checksum: false
-  when: key_generated is defined
-
-- name: "put master rndc.key to slave"
-  copy:
-    src: "./.tmp/rndc.key"
-    dest: "/etc/rndc.key"
+- name: put rndc.key
+  template:
+    src: rndc.key.j2
+    dest: /etc/rndc.key
     owner: root
     group: named
     mode: 0640
-    force: yes
-  when: key_generated is defined
+
+- name: purge resolv.conf from interface`s config
+  shell: find /etc/net/ifaces -name 'resolv.conf' -delete
+  changed_when: false
+
+- name: set DNS resolver to the localhost
+  template:
+    src: resolv.conf
+    dest: /etc/net/ifaces/lo/resolv.conf
+  notify: restart network
 
 - include_tasks: master.yml
   when: bind_zone_master_server_ip in ansible_all_ipv4_addresses
