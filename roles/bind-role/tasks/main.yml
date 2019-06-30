@@ -18,6 +18,18 @@
   with_items: "{{ bind_packages }}"
   tags: bind
 
+- name: fix bind service unit
+  lineinfile:
+    dest: /lib/systemd/system/bind.service
+    regexp: "{{ item.regexp | default(omit)}}"
+    line: "{{ item.line }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+  notify: reload systemd
+  with_items:
+  - { line: 'PartOf=network.service', insertafter: '^After=network'}
+  - { regexp: '^After=network', line: 'After=network.service'}
+
+
 - name: Ensure runtime directories referenced in config exist
   file:
     path: "{{ item }}"
