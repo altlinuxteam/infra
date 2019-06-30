@@ -110,3 +110,5 @@ zone "{{ (network | ipaddr('revdns'))[-(9+(network|regex_replace('^.*/','')|int)
 };
 {% endfor %}
 {% endif %}
+
+{% include 'zone_forwards_etc_named.conf.j2' %}

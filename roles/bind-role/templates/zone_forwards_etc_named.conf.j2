@@ -1,0 +1,9 @@
+{% if bind_zone_forwards is defined %}
+{% for fwd in bind_zone_forwards %}
+zone "{{ fwd.zone }}" {
+  type forward;
+  forward only;
+  forwarders { {{fwd.forwarders | join(';')}}; };
+};
+{% endfor %}
+{% endif %}
