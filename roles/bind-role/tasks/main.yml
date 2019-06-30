@@ -60,7 +60,7 @@
 - name: put rndc.key
   template:
     src: rndc.key.j2
-    dest: /etc/rndc.key
+    dest: /var/lib/bind/etc/rndc.key
     owner: root
     group: named
     mode: 0640
@@ -80,6 +80,10 @@
 
 - include_tasks: slave.yml
   when: bind_zone_master_server_ip not in ansible_all_ipv4_addresses
+
+- name: black magick
+  shell: update_chrooted all
+  changed_when: false
 
 - name: Start BIND service
   service:
