@@ -1,0 +1,73 @@
+---
+
+- name: check required variables
+  fail: msg="{{ item }} is not defined"
+  when: item not in vars
+  with_items: "{{ krb5_required_vars }}"
+
+# Install KDC and kadmin daemons
+- name: Install Kerberos 5 KDC packages
+  apt_rpm:
+    pkg: "{{ krb5_packages | join(',')}}"
+    state: installed
+    update_cache: yes
+  when: krb5_packages | length > 0
+
+# Configure /etc/hosts and avoid complex DNS configuration for KDC
+- name: Configure /etc/hosts for Kerberos 5
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644
+
+# We need to initialize principal database on the new system in order
+# 'krb5kdc` to work.
+- name: Initialize Kerberos 5 local database
+  shell: "kdb5_util create -P '{{ krb5_admin_pass }}' -r {{ krb5_realm | upper }} -s"
+
+# We must configure Kerberos 5 realm properly for krb5kdc
+- name: Configure krb5kdc
+  template:
+    src: kdc.conf.j2
+    dest: '{{ kdc_var_path }}/kdc.conf'
+    owner: root
+    group: root
+    mode: 0600
+
+# We need to configure the principal to have ALL permissions. It's\
+# like 'root' user but for Kerberos KDC.
+- name: Configure kadmin user permissions
+  template:
+    src: kadm5.acl.j2
+    dest: '{{ kdc_var_path }}/kadm5.acl'
+    owner: root
+    group: root
+    mode: 0600
+
+# Then we need at least one principal with administrative privileges
+# in order to work with Kerberos database via `kadmin` daemon.
+- name: Create Kerberos 5 admin principal
+  shell: "kadmin.local -q 'addprinc -pw {{ krb5_admin_pass }} admin/admin@{{ krb5_realm | upper }}'"
+
+# Start krb5kdc finally
+- name: Enable and start krb5kdc
+  systemd:
+    name: krb5kdc
+    enabled: yes
+    state: started
+
+# kadmin daemon needs krb5kdc to work with so it starts after it
+- name: Enable and start kadmin
+  systemd:
+    name: kadmin
+    enabled: yes
+    state: started
+
+- name: register node in localhost hostvars
+  set_fact:
+    krb5_masters: "{{ hostvars['localhost']['krb5_masters'] | default([]) }} + [ '{{ inventory_hostname_short }}' ]"
+  delegate_to: localhost
+  delegate_facts: true
+
