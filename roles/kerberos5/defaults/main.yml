@@ -1,0 +1,24 @@
+---
+
+krb5_required_vars:
+  - krb5_flavor
+  - krb5_realm
+  - krb5_domain
+  - krb5_admin_pass
+  - krb5_master_address
+
+krb5_packages:
+  - bind-utils
+  - krb5-kinit
+  - krb5-kdc
+  - krb5-kadmin
+
+krb5_cl_required_vars:
+  - krb5_master_address
+
+krb5_cl_packages:
+  - krb5-kinit
+  - bind-utils
+
+kdc_var_path: '/var/lib/kerberos/krb5kdc'
+

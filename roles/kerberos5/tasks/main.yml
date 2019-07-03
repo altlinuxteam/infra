@@ -1,0 +1,69 @@
+---
+
+- block:
+  - name: check required variables
+    fail: msg="{{ item }} is not defined"
+    when: item not in vars
+    with_items: "{{ krb5_required_vars }}"
+
+  - name: install openresolv and etcnet
+    apt_rpm: pkg=openresolv,etcnet state=present
+    register: openresolv_install
+
+  - name: check if altlinux-openresolv service exists
+    command: service altlinux-openresolv status
+    register:
+      altlinux_openresolv_status
+    failed_when: False
+
+  - set_fact:
+      altlinux_openresolv_exists: "{{ altlinux_openresolv_status.rc != 3 }}"
+
+  # XXX: touching /etc/resolv.conf might start altlinux-openresolv.service,
+  # (if it hasn't been started before, i.e. if the openresolv package haven't
+  # been installed before applying this role). altlinux-openresolv overwrites
+  # modifications of /etc/resolv.conf done by this role. Therefore explicitly
+  # start altlinux-openresolv before adjusting /etc/resolv.conf
+  - name: start altlinux-openresolv
+    service: name=altlinux-openresolv state=started
+    when: altlinux_openresolv_exists|bool and openresolv_install.changed|bool
+
+  - name: create /etc/krb5.conf
+    template:
+      src: krb5.conf.j2
+      dest: /etc/krb5.conf
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: set hostname (non permanent)
+    shell: hostname "{{inventory_hostname_short}}.{{krb5_realm}}"
+    changed_when: false
+
+- name: Deploy Kerberos 5 server
+  include_tasks: master.yml
+  when: krb5_flavor == 'kdc_master'
+
+- name: Deploy Kerberos 5 client
+  include_tasks: client.yml
+  when: krb5_flavor == 'kdc_client'
+
+- debug:
+    msg: '{{ krb5_master_address }}'
+
+- name: Configure /etc/hosts for Kerberos 5
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Refresh Kerberos 5 key
+  shell: 'echo {{ krb5_admin_pass}} | kinit admin/admin@{{ krb5_realm | upper}}'
+  changed_when: false
+  register: task_result
+  until: task_result.rc == 0
+  retries: 30
+  delay: 1
+
