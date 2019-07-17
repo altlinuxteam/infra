@@ -1,0 +1,14 @@
+---
+# defaults file for tester
+tester_required_vars: 
+  - tester_cve_repo
+
+tester_packages:
+  - python-module-pytest
+  - python-module-pytest-bdd
+  - python-module-paramiko
+  - git
+  - curl
+
+tester_username: abuser
+tester_username: abuser_sudo

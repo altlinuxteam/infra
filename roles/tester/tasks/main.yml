@@ -1,0 +1,28 @@
+---
+# tasks file for tester
+- block:
+  - name: check required variables
+    fail: msg="{{ item }} is not defined"
+    when: item not in vars
+    with_items: "{{ tester_required_vars }}"
+
+  - name: install required packages
+    shell: "apt-get install -y {{ tester_packages | join(' ') }}"
+    when: (tester_packages | length > 0)
+
+- name: "ensure that the {{ tester_username }} exists"
+  user:
+    name: "{{ tester_username }}"
+
+- name: "ensure that the {{ tester_username_sudo }} exists"
+  user:
+    name: "{{ tester_username }}"
+    groups: wheel
+    append: true
+
+- name: fetch CVE repository
+  git:
+    repo: "{{ tester_cve_repo }}"
+    dist: "/{{ tester_username }}/cve"
+  become: yes
+  become_user: "{{ tester_username }}"
