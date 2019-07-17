@@ -22,10 +22,16 @@
     group: root
     mode: 0644
 
+- name: Check local Kerberos 5 database existence
+  stat:
+    path: '{{ kdc_var_path }}/principal'
+  register: stat_kdc_db
+
 # We need to initialize principal database on the new system in order
 # 'krb5kdc` to work.
 - name: Initialize Kerberos 5 local database
   shell: "kdb5_util create -P '{{ krb5_admin_pass }}' -r {{ krb5_realm | upper }} -s"
+  when: stat_kdc_db.stat.exists == False
 
 # We must configure Kerberos 5 realm properly for krb5kdc
 - name: Configure krb5kdc
