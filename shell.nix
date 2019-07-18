@@ -5,19 +5,19 @@
 with pkgs;
 
 let
-  pytest-bdd = callPackage nix/pytest-bdd {};
-  proxmoxer = callPackage nix/proxmoxer {};
-  ansible = callPackage nix/ansible {};
+  myPytest-bdd = callPackage nix/pytest-bdd { pythonPackages = python37Packages; };
+  myProxmoxer = callPackage nix/proxmoxer { pythonPackages = python37Packages; };
+  myAnsible = callPackage nix/ansible { pythonPackages = python37Packages; };
 
-  myPython = python27.withPackages (ps: with ps; [ pytest-bdd proxmoxer jmespath virtualenv pip hypothesis pytest_xdist pytest ]);
+  env = python37.withPackages (ps: with ps; [ myPytest-bdd myProxmoxer jmespath virtualenv pip hypothesis pytest_xdist pytest ]);
 in
 stdenv.mkDerivation {
   name = "alt-infra-ansible";
 
   buildInputs = [
+    env
     openssh
-    ansible
-    myPython
+    myAnsible
     pass
   ];
 }

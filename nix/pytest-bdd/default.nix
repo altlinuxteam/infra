@@ -1,17 +1,19 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}
+, pythonPackages
+}:
   
-with pkgs;
+with pythonPackages;
 
-python27.pkgs.buildPythonPackage rec {
+buildPythonPackage rec {
   pname = "pytest-bdd";
-  version = "3.0.0";
+  version = "3.1.1";
 
-  src = python36.pkgs.fetchPypi {
+  src = fetchPypi {
     inherit pname version;
-    sha256 = "1np2qvfnhz3amd02f2y4shp4pracnfdkcdxkhkigv997iwc4sih0";
+    sha256 = "0r5p9i0viqfm8l5336fpjjwad4z98077fgi3652qym75mmhirb2w";
   };
 
-  glob2 = callPackage ../glob2 {};
+  glob2 = callPackage ../glob2 { inherit pythonPackages; };
 
   nativeBuildInputs = with pythonPackages; [ setuptools_scm ];
   propagatedBuildInputs = with pythonPackages; [ glob2 pytest pytest-forked mock pytest_xdist Mako parse-type ];

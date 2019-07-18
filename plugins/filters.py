@@ -36,7 +36,7 @@ def dict_merge(dct, merge_dct):
     :param merge_dct: dct merged into dct
     :return: None
     """
-    for k, v in merge_dct.iteritems():
+    for k, v in merge_dct.items():
         if (k in dct and isinstance(dct[k], dict)
                 and isinstance(merge_dct[k], collections.Mapping)):
             dict_merge(dct[k], merge_dct[k])
@@ -115,7 +115,7 @@ def get_steps(node, steps_list):
 
 def filter_dict(src, pred):
     p = eval(pred)
-    return { k: v for k, v in src.iteritems() if p(v)}
+    return { k: v for k, v in src.items() if p(v)}
 
 def format2(what, fmt):
     return fmt % what
