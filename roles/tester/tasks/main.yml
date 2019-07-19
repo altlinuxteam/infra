@@ -16,13 +16,13 @@
 
 - name: "ensure that the {{ tester_username_sudo }} exists"
   user:
-    name: "{{ tester_username }}"
+    name: "{{ tester_username_sudo }}"
     groups: wheel
     append: true
 
 - name: fetch CVE repository
   git:
     repo: "{{ tester_cve_repo }}"
-    dist: "/{{ tester_username }}/cve"
+    dest: "/home/{{ tester_username_sudo }}/cve"
   become: yes
-  become_user: "{{ tester_username }}"
+  become_user: "{{ tester_username_sudo }}"

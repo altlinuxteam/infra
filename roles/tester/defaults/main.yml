@@ -4,11 +4,13 @@ tester_required_vars:
   - tester_cve_repo
 
 tester_packages:
+  - pytest
   - python-module-pytest
   - python-module-pytest-bdd
   - python-module-paramiko
   - git
   - curl
+  - gcc
 
 tester_username: abuser
-tester_username: abuser_sudo
+tester_username_sudo: abuser_sudo
