@@ -28,13 +28,6 @@
   pre_tasks:
     - meta: end_play
       when: destroy_all is defined and destroy_all|bool
-    - name: check prereqs is already installed
-      shell: rpm -qa | grep -q python-modules-distutils
-      register: prereqs_found
-      changed_when: false
-    - name: install prereqs
-      raw: 'apt-get update && apt-get install -qy python2.7\(distutils\)'
-      when: (destroy_all is not defined or not destroy_all) and (prereqs_found.rc != 0)
     - name: gather facts
       setup:
       when: destroy_all is not defined or not destroy_all
