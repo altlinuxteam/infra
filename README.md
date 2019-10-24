@@ -1,7 +1,30 @@
-# Prepare
+# Samba DC testing infrastructure deployment
+
+
+## Contents
+
+* [Prerequisites](#prerequisites)
+* [Quickstart](#quickstart)
+* [Deployment options](#deployment-options)
+
+* * *
+
+
+## Prerequisites
+
+* **Ansible** with necessary Python modules installed
+* **Git** with **git-subtree** module installed
+
+
+## Quickstart
+
 install prerequired ansible 2.6+ and python modules
 ```sh
-apt-get install ansible python-module-proxmoxer python-module-jmespath python-module-netaddr
+apt-get install ansible \
+    python-module-proxmoxer \
+    python-module-jmespath \
+    python-module-netaddr \
+    git-subtree
 ```
 
 init submodules and pull infra-conf repository
@@ -18,3 +41,13 @@ deploy desired stack
 ```sh
 ./infra.sh test-env test-stack
 ```
+
+
+## Deployment options
+
+You may add some extra options to `infra.sh`:
+
+* **-e redeploy_all=yes** - Apply the playbook to existing VMs once
+  again.
+* **-e destroy_all=yes** - Stop all VMs.
+
