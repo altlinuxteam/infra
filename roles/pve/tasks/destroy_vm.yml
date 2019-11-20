@@ -1,5 +1,7 @@
 - set_fact: node_name="{{tmp_node}}"
 - set_fact: vm_name="{{node_name}}.{{stack.name}}"
+- set_fact:
+    kvm_timeout: 500
 
 - name: checking that vm exists
   proxmox_kvm:
@@ -22,7 +24,8 @@
       name: "{{vm_name}}"
       state: stopped
       force: yes
-      timeout: 120
+      timeout: "{{ kvm_timeout }}"
+    ignore_errors: yes
   - name: destroying vm
     proxmox_kvm:
       node: srv
@@ -31,4 +34,5 @@
       api_host: "{{env.pve.api_url}}"
       name: "{{vm_name}}"
       state: absent
+      timeout: "{{ kvm_timeout }}"
   when: vm_exists is succeeded

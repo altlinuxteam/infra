@@ -2,6 +2,8 @@
 - set_fact: node_name="{{tmp_node}}"
 - set_fact: vm_name="{{node_name}}.{{stack.name}}"
 - set_fact: other_nics_to_vlan=false
+- set_fact:
+    kvm_timeout: 500
 
 - name: "[{{vm_name}}] clone VM"
   proxmox_kvm:
@@ -84,6 +86,7 @@
     api_host: "{{env.pve.api_url}}"
     name: "{{vm_name}}"
     state: started
+    timeout: "{{ kvm_timeout }}"
 
 - name: "[{{vm_name}}] wait for qemu-agent return addresses list"
   proxmox_qemu_agent:
