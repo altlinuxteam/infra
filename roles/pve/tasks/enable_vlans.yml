@@ -1,6 +1,8 @@
 ---
 - set_fact: node_name="{{inventory_hostname_short}}"
 - set_fact: vm_name="{{node_name}}.{{stack.name}}"
+- set_fact:
+    kvm_timeout: 500
 
 - name: "[{{vm_name}}] enable all VLANs"
   proxmox_kvm:
@@ -20,6 +22,7 @@
     ipconfig0: "ip={{stack.nodes[node_name].net.eth0.ipv4[0]}},gw={{stack.nodes[node_name].net.eth0.default}}"
     nameserver: "{{stack.nodes[node_name].net.eth0.nameservers | default(omit) | first}}"
     searchdomain: "{{stack.nodes[node_name].net.eth0.search | default(omit) | first}}"
+    timeout: "{{ kvm_timeout }}"
   register: vm_status
   until: vm_status is succeeded
   retries: 30
