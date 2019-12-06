@@ -19,6 +19,13 @@
   - {role: inventory, bootstrap: yes, tags: [ ]}
   tags: [ provision ]
 
+- name: Wait for VMs to go up
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - pause:
+      minutes: 2
+
 - name: prepare nodes
   hosts: stack
   gather_facts: false
