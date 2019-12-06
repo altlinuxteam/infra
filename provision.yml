@@ -24,7 +24,7 @@
   gather_facts: false
   tasks:
   - pause:
-      minutes: 2
+      minutes: 3
 
 - name: prepare nodes
   hosts: stack
