@@ -1,15 +1,16 @@
 { pkgs ? import <nixpkgs> {} 
 , windowsSupport ? false
+, pythonPackages
 }:
   
-with pkgs;
+with pythonPackages;
 
-pythonPackages.buildPythonPackage rec {
+buildPythonPackage rec {
   pname = "ansible";
   version = "devel";
   name = "${pname}-${version}";
 
-  src = fetchFromGitHub {
+  src = pkgs.fetchFromGitHub {
     owner = "ansible";
     repo = "ansible";
     rev = "1724b633f2fdc4c8d49e634d44864ef5e2e2d4c6";
@@ -28,10 +29,10 @@ pythonPackages.buildPythonPackage rec {
   dontPatchShebangs = false;
 
   propagatedBuildInputs = with pythonPackages; [
-    pycrypto paramiko jinja2 pyyaml httplib2 boto six netaddr dnspython
-  ] ++ stdenv.lib.optional windowsSupport pywinrm;
+    pycrypto paramiko jinja2 pyyaml httplib2 boto six netaddr dnspython cryptography
+  ] ++ pkgs.stdenv.lib.optional windowsSupport pywinrm;
 
-  meta = with stdenv.lib; {
+  meta = with pkgs.stdenv.lib; {
     homepage = http://www.ansible.com;
     description = "A simple automation tool";
     license = with licenses; [ gpl3 ];

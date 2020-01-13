@@ -1,12 +1,14 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}
+, pythonPackages
+}:
 
-with pkgs;
+with pythonPackages;
 
-python27.pkgs.buildPythonPackage rec {
+buildPythonPackage rec {
   pname = "glob2";
   version = "0.6";
 
-  src = python36.pkgs.fetchPypi {
+  src = fetchPypi {
     inherit pname version;
     sha256 = "1miyz0pjyji4gqrzl04xsxcylk3h2v9fvi7hsg221y11zy3adc7m";
   };
