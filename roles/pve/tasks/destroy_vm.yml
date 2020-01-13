@@ -25,7 +25,6 @@
       state: stopped
       force: yes
       timeout: "{{ kvm_timeout }}"
-    ignore_errors: yes
   - name: destroying vm
     proxmox_kvm:
       node: srv
