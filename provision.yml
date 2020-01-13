@@ -25,6 +25,7 @@
   tasks:
   - pause:
       minutes: 10
+    when: destroy_all is not defined or not destroy_all
 
 - name: prepare nodes
   hosts: stack
