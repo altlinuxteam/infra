@@ -5,7 +5,7 @@
 
 - name: checking that vm exists
   proxmox_kvm:
-    node: srv
+    node: pve
     api_user: "{{env.pve.username}}"
     api_password: "{{env.pve.password}}"
     api_host: "{{env.pve.api_url}}"
@@ -17,7 +17,7 @@
 - block:
   - name: stopping vm
     proxmox_kvm:
-      node: srv
+      node: pve
       api_user: "{{env.pve.username}}"
       api_password: "{{env.pve.password}}"
       api_host: "{{env.pve.api_url}}"
@@ -27,7 +27,7 @@
       timeout: "{{ kvm_timeout }}"
   - name: destroying vm
     proxmox_kvm:
-      node: srv
+      node: pve
       api_user: "{{env.pve.username}}"
       api_password: "{{env.pve.password}}"
       api_host: "{{env.pve.api_url}}"

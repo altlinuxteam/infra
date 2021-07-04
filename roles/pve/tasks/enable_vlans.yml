@@ -6,7 +6,7 @@
 
 - name: "[{{vm_name}}] enable all VLANs"
   proxmox_kvm:
-    node: srv
+    node: pve
     api_user: "{{env.pve.username}}"
     api_password: "{{env.pve.password}}"
     api_host: "{{env.pve.api_url}}"

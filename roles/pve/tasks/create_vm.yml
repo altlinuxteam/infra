@@ -7,7 +7,7 @@
 
 - name: "[{{vm_name}}] clone VM"
   proxmox_kvm:
-    node: srv
+    node: pve
     api_user: "{{env.pve.username}}"
     api_password: "{{env.pve.password}}"
     api_host: "{{env.pve.api_url}}"
@@ -21,7 +21,7 @@
 
 - name: "[{{vm_name}}] get VM state"
   proxmox_kvm:
-    node: srv
+    node: pve
     api_user: "{{env.pve.username}}"
     api_password: "{{env.pve.password}}"
     api_host: "{{env.pve.api_url}}"
@@ -54,7 +54,7 @@
 
 - name: "[{{vm_name}}] configure VM"
   proxmox_kvm:
-    node: srv
+    node: pve
     api_user: "{{env.pve.username}}"
     api_password: "{{env.pve.password}}"
     api_host: "{{env.pve.api_url}}"
@@ -80,7 +80,7 @@
 
 - name: "[{{vm_name}}] start VM"
   proxmox_kvm:
-    node: srv
+    node: pve
     api_user: "{{env.pve.username}}"
     api_password: "{{env.pve.password}}"
     api_host: "{{env.pve.api_url}}"
