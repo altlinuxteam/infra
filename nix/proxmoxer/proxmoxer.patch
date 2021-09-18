@@ -1,9 +1,39 @@
-commit 60662c4891859ca1b6cf87d7068958d4f9dc7f21
-Author: timansky <timansky@kolesa.team>
-Date:   Wed Dec 18 16:04:56 2019 +0600
+--- a/proxmoxer/core.py   1970-01-01 04:00:01.000000000 +0400
++++ b/proxmoxer/core.py   2018-10-29 15:21:20.241881023 +0400
+@@ -76,7 +76,7 @@
+ 
+         if resp.status_code >= 400:
+             raise ResourceException("{0} {1}: {2}".format(resp.status_code, httplib.responses[resp.status_code],
+-                                                          resp.content))
++                                                          resp.reason))
+         elif 200 <= resp.status_code <= 299:
+             return self._store["serializer"].loads(resp)
 
-    Fix pvesh output format for version > 5.3
-
+diff --git a/proxmoxer/backends/https.py b/proxmoxer/backends/https.py
+index ad76a47..e96b822 100644
+--- a/proxmoxer/backends/https.py
++++ b/proxmoxer/backends/https.py
+@@ -38,9 +38,10 @@ class AuthenticationError(Exception):
+ 
+ 
+ class ProxmoxHTTPAuth(AuthBase):
+-    def __init__(self, base_url, username, password, verify_ssl=False):
++    def __init__(self, base_url, username, password, verify_ssl=False, timeout=5):
+         response_data = requests.post(base_url + "/access/ticket",
+                                       verify=verify_ssl,
++                                      timeout=timeout,
+                                       data={"username": username, "password": password}).json()["data"]
+         if response_data is None:
+             raise AuthenticationError("Couldn't authenticate user: {0} to {1}".format(username, base_url + "/access/ticket"))
+@@ -122,7 +123,7 @@ class Backend(object):
+         if auth_token is not None:
+             self.auth = ProxmoxHTTPTokenAuth(auth_token, csrf_token)
+         else:
+-            self.auth = ProxmoxHTTPAuth(self.base_url, user, password, verify_ssl)
++            self.auth = ProxmoxHTTPAuth(self.base_url, user, password, verify_ssl, timeout)
+         self.verify_ssl = verify_ssl
+         self.mode = mode
+         self.timeout = timeout
 diff --git a/proxmoxer/backends/base_ssh.py b/proxmoxer/backends/base_ssh.py
 index da624d9..b3ba1b3 100644
 --- a/proxmoxer/backends/base_ssh.py
