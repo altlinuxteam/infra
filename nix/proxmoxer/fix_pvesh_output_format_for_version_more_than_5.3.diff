@@ -1,0 +1,49 @@
+commit 60662c4891859ca1b6cf87d7068958d4f9dc7f21
+Author: timansky <timansky@kolesa.team>
+Date:   Wed Dec 18 16:04:56 2019 +0600
+
+    Fix pvesh output format for version > 5.3
+
+diff --git a/proxmoxer/backends/base_ssh.py b/proxmoxer/backends/base_ssh.py
+index da624d9..b3ba1b3 100644
+--- a/proxmoxer/backends/base_ssh.py
++++ b/proxmoxer/backends/base_ssh.py
+@@ -41,7 +41,7 @@ class ProxmoxBaseSSHSession(object):
+             data['tmpfilename'] = tmp_filename
+ 
+         translated_data = ' '.join(["-{0} {1}".format(k, v) for k, v in chain(data.items(), params.items())])
+-        full_cmd = 'pvesh {0}'.format(' '.join(filter(None, (cmd, url, translated_data))))
++        full_cmd = 'pvesh {0} --output-format json'.format(' '.join(filter(None, (cmd, url, translated_data))))
+ 
+         stdout, stderr = self._exec(full_cmd)
+         match = lambda s: re.match('\d\d\d [a-zA-Z]', s)
+diff --git a/tests/base/base_ssh_suite.py b/tests/base/base_ssh_suite.py
+index 943b72f..ddb4bf3 100644
+--- a/tests/base/base_ssh_suite.py
++++ b/tests/base/base_ssh_suite.py
+@@ -62,7 +62,7 @@ class BaseSSHSuite(object):
+                }
+             ]""")
+         result = self.proxmox.nodes('proxmox').storage('local').get()
+-        eq_(self._get_called_cmd(), self._called_cmd('pvesh get /nodes/proxmox/storage/local'))
++        eq_(self._get_called_cmd(), self._called_cmd('pvesh get /nodes/proxmox/storage/local --output-format json'))
+         eq_(result[0]['subdir'], 'status')
+         eq_(result[1]['subdir'], 'content')
+         eq_(result[2]['subdir'], 'upload')
+@@ -71,13 +71,13 @@ class BaseSSHSuite(object):
+ 
+     def test_delete(self):
+         self.proxmox.nodes('proxmox').openvz(100).delete()
+-        eq_(self._get_called_cmd(), self._called_cmd('pvesh delete /nodes/proxmox/openvz/100'))
++        eq_(self._get_called_cmd(), self._called_cmd('pvesh delete /nodes/proxmox/openvz/100 --output-format json'))
+         self._set_stderr("200 OK")
+         self.proxmox.nodes('proxmox').openvz('101').delete()
+-        eq_(self._get_called_cmd(), self._called_cmd('pvesh delete /nodes/proxmox/openvz/101'))
++        eq_(self._get_called_cmd(), self._called_cmd('pvesh delete /nodes/proxmox/openvz/101 --output-format json'))
+         self._set_stderr("200 OK")
+         self.proxmox.nodes('proxmox').openvz.delete('102')
+-        eq_(self._get_called_cmd(), self._called_cmd('pvesh delete /nodes/proxmox/openvz/102'))
++        eq_(self._get_called_cmd(), self._called_cmd('pvesh delete /nodes/proxmox/openvz/102 --output-format json'))
+ 
+     def test_post(self):
+         self._set_stderr("200 OK")
