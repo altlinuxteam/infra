@@ -1,4 +1,4 @@
-{% for node_name, node in stack.nodes.iteritems() %}
+{% for node_name, node in stack.nodes.items() %}
 Host {{node_name}}.{{stack.domain}} {{node_name}}
 {% if node.nics is defined %}
   HostName {{node.nics.eth0.addrs[0]|ipaddr('address')}}

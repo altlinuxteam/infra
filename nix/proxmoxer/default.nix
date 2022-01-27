@@ -1,12 +1,14 @@
-{ pkgs ? import <nixpkgs> {} }:
-  
-with pkgs;
+{ pkgs ? import <nixpkgs> {}
+, pythonPackages
+}:
 
-python27.pkgs.buildPythonPackage rec {
+with pythonPackages;
+
+buildPythonPackage rec {
   pname = "proxmoxer";
   version = "1.0.3";
 
-  src = python36.pkgs.fetchPypi {
+  src = fetchPypi {
     inherit pname version;
     sha256 = "145hvphvlzvwq6sn31ldnin0ii50blsapxz0gv2zx3grzp6x9hvh";
   };

@@ -644,7 +644,7 @@ def get_vminfo(module, proxmox, node, vmid, **kwargs):
     kwargs = dict((k, v) for k, v in kwargs.items() if v is not None)
 
     # Convert all dict in kwargs to elements. For hostpci[n], ide[n], net[n], numa[n], parallel[n], sata[n], scsi[n], serial[n], virtio[n]
-    for k in kwargs.keys():
+    for k in list(kwargs):
         if isinstance(kwargs[k], dict):
             kwargs.update(kwargs[k])
             del kwargs[k]
@@ -730,7 +730,7 @@ def create_vm(module, proxmox, vmid, newid, node, name, memory, cpu, cores, sock
                     #kwargs['net'][n]['virtio'] = results['mac'][n]
 
     # Convert all dict in kwargs to elements. For hostpci[n], ide[n], net[n], numa[n], parallel[n], sata[n], scsi[n], serial[n], virtio[n]
-    for k in kwargs.keys():
+    for k in list(kwargs):
         if isinstance(kwargs[k], dict):
             kwargs.update(kwargs[k])
             del kwargs[k]
