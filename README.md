@@ -1,7 +1,7 @@
 # Prepare
 install prerequired ansible 2.6+ and python modules
 ```sh
-apt-get install ansible python-module-proxmoxer python-module-jmespath python-module-netaddr
+apt-get install git-subtree ansible python-module-proxmoxer python-module-jmespath python-module-netaddr
 ```
 
 init submodules and pull infra-conf repository
