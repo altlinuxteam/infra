@@ -56,6 +56,7 @@
     - name: update with tasks repos
       shell: |
         apt-get update
+        apt-get install apt rpm -yq
         apt-get dist-upgrade -yq
   when: stack.apt_sources_from_tasks is defined and stack.apt_sources_from_tasks | length > 0
 
